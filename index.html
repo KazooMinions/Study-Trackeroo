@@ -34,8 +34,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
    LANDING PAGE
 ══════════════════════════════════════ */
 #landingPage{min-height:100vh;display:flex;flex-direction:column;}
-
-/* landing nav */
 .land-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:.5px solid var(--border);}
 .land-logo{font-size:16px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;}
 .land-nav-right{display:flex;gap:10px;align-items:center;}
@@ -44,8 +42,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);}
 .land-btn.primary:hover{opacity:.85;}
 @media(max-width:600px){.land-nav{padding:16px 20px;}}
-
-/* hero */
 .land-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;}
 .land-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text2);margin-bottom:28px;font-weight:500;}
 .land-hero h1{font-size:clamp(36px,6vw,64px);font-weight:700;letter-spacing:-2px;line-height:1.08;margin-bottom:20px;max-width:700px;}
@@ -57,8 +53,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-cta.primary:hover{opacity:.85;}
 .land-cta.secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border2);}
 .land-cta.secondary:hover{background:var(--bg3);}
-
-/* features */
 .land-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:780px;width:100%;margin:0 auto;}
 @media(max-width:600px){.land-features{grid-template-columns:1fr 1fr;}}
 @media(max-width:400px){.land-features{grid-template-columns:1fr;}}
@@ -66,8 +60,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-feature-icon{font-size:22px;margin-bottom:8px;}
 .land-feature-title{font-size:13px;font-weight:700;margin-bottom:4px;}
 .land-feature-desc{font-size:11px;color:var(--text3);line-height:1.5;}
-
-/* social proof */
 .land-social{text-align:center;padding:48px 24px;border-top:.5px solid var(--border);}
 .land-social p{font-size:12px;color:var(--text3);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
 .land-avatars{display:flex;align-items:center;justify-content:center;gap:0;}
@@ -77,7 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-social-text strong{color:var(--text);}
 
 /* ══════════════════════════════════════
-   LOADING / AUTH (in-app)
+   LOADING / AUTH
 ══════════════════════════════════════ */
 .loading{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:13px;color:var(--text3);}
 
@@ -259,6 +251,22 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 .modal-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);}
 .modal-btn:hover{opacity:.8;}
 
+/* STOP SESSION MODAL */
+.stop-modal-actions{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.stop-action-btn{width:100%;text-align:left;padding:13px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;transition:all .15s;outline:none;}
+.stop-action-btn:hover{border-color:var(--text2);background:var(--bg3);}
+.stop-action-btn.save-btn{border-color:var(--green2);}
+.stop-action-btn.save-btn:hover{border-color:var(--green3);background:#eaf3de;}
+[data-theme="dark"] .stop-action-btn.save-btn:hover{background:#182810;}
+.stop-action-btn.discard-btn:hover{border-color:var(--red);}
+.stop-action-btn.discard-btn:hover .sab-label{color:var(--red);}
+.sab-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.sab-text{flex:1;}
+.sab-label{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:2px;}
+.sab-sub{font-size:11px;color:var(--text3);}
+.stop-note-wrap{margin-bottom:14px;}
+.stop-note-label{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+
 /* COUNTDOWN MODAL */
 .emoji-picker{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
 .emoji-opt{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .15s;outline:none;}
@@ -365,9 +373,7 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     LANDING PAGE
-══════════════════════════════════════ -->
+<!-- LANDING PAGE -->
 <div id="landingPage">
   <nav class="land-nav">
     <div class="land-logo">📚 StudyTrack</div>
@@ -379,7 +385,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       </button>
     </div>
   </nav>
-
   <div class="land-hero">
     <div class="land-badge">✨ Free forever · No ads · Open source</div>
     <h1>Study smarter.<br><span>Track every session.</span></h1>
@@ -390,7 +395,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
         Get started with Google
       </button>
     </div>
-
     <div class="land-features">
       <div class="land-feature"><div class="land-feature-icon">📅</div><div class="land-feature-title">Activity Calendar</div><div class="land-feature-desc">GitHub-style heatmap showing every study day across the year.</div></div>
       <div class="land-feature"><div class="land-feature-icon">⏰</div><div class="land-feature-title">Countdown Timer</div><div class="land-feature-desc">Add exams and deadlines. Watch the days tick down in real time.</div></div>
@@ -400,7 +404,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       <div class="land-feature"><div class="land-feature-icon">🎵</div><div class="land-feature-title">Lo-fi Radio</div><div class="land-feature-desc">Built-in music player with study-friendly stations. No Spotify needed.</div></div>
     </div>
   </div>
-
   <div class="land-social">
     <p>Join students already tracking</p>
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
@@ -416,9 +419,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     LOADING
-══════════════════════════════════════ -->
 <div class="loading hidden" id="loading">Loading...</div>
 
 <!-- BREAK OVERLAY -->
@@ -431,7 +431,44 @@ textarea.modal-input{resize:vertical;min-height:80px;}
   <button class="pill" style="margin-top:24px;" onclick="skipBreak()">Skip break →</button>
 </div>
 
-<!-- SESSION NOTES MODAL -->
+<!-- ══════════════════════════════════════
+     STOP SESSION MODAL (new — replaces simple pause)
+══════════════════════════════════════ -->
+<div class="modal-backdrop" id="stopModal">
+  <div class="modal">
+    <h3 id="stopModalTitle">⏸ Session paused</h3>
+    <p id="stopModalSub" style="margin-bottom:16px;font-size:13px;color:var(--text3);"></p>
+    <div class="stop-note-wrap">
+      <div class="stop-note-label">Session note (optional)</div>
+      <textarea class="modal-input" id="stopSessionNotes" placeholder="What did you cover? e.g. Chapters 4–6, integration by parts…" style="margin-bottom:0;"></textarea>
+    </div>
+    <div class="stop-modal-actions">
+      <button class="stop-action-btn save-btn" onclick="stopModalSave()">
+        <span class="sab-icon">💾</span>
+        <span class="sab-text">
+          <span class="sab-label">Save &amp; finish session</span>
+          <span class="sab-sub">Log this session and reset the timer</span>
+        </span>
+      </button>
+      <button class="stop-action-btn" onclick="stopModalContinue()">
+        <span class="sab-icon">▶</span>
+        <span class="sab-text">
+          <span class="sab-label">Continue session</span>
+          <span class="sab-sub">Resume right where you left off</span>
+        </span>
+      </button>
+      <button class="stop-action-btn discard-btn" onclick="stopModalDiscard()">
+        <span class="sab-icon">🗑</span>
+        <span class="sab-text">
+          <span class="sab-label">Discard</span>
+          <span class="sab-sub">Throw away this session without saving</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SESSION NOTES MODAL (timer auto-completion only) -->
 <div class="modal-backdrop" id="notesModal">
   <div class="modal">
     <h3>🎉 Session complete!</h3>
@@ -571,7 +608,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       <div class="section-label">Daily & Weekly Goals</div>
       <div class="goals-row" id="goalsRow"></div>
 
-      <!-- COUNTDOWNS -->
       <div class="countdown-section">
         <div class="section-label">Countdowns</div>
         <div class="countdown-list" id="countdownList"></div>
@@ -580,7 +616,6 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 
       <hr class="divider">
 
-      <!-- Calendar -->
       <div style="margin-bottom:32px;">
         <div class="cal-header">
           <div class="section-label" style="margin-bottom:0;">Activity</div>
@@ -934,7 +969,6 @@ function saveCds(){localStorage.setItem('st_countdowns',JSON.stringify(S.countdo
 window.openCountdownModal=function(){
   S.selectedCdEmoji='📅';
   document.getElementById('cdNameInput').value='';
-  // set default datetime to tomorrow
   const tm=new Date(Date.now()+86400000);
   tm.setHours(9,0,0,0);
   document.getElementById('cdDateInput').value=tm.toISOString().slice(0,16);
@@ -1015,7 +1049,6 @@ function renderCountdowns(){
 function tickCountdowns(){
   S.countdowns.forEach(cd=>{
     const{d,h,m,s,done}=getCdDiff(cd.targetTs);
-    // update only the number elements to avoid re-render flicker
     const dEl=document.getElementById(`cd-d-${cd.id}`);
     const hEl=document.getElementById(`cd-h-${cd.id}`);
     const mEl=document.getElementById(`cd-m-${cd.id}`);
@@ -1024,10 +1057,7 @@ function tickCountdowns(){
     if(mEl)mEl.textContent=pad(m);
     if(sEl)sEl.textContent=pad(s);
     if(dEl)dEl.textContent=pad(d);
-    // re-render if just became done
-    if(done&&document.getElementById(`cd-s-${cd.id}`)){
-      renderCountdowns();
-    }
+    if(done&&document.getElementById(`cd-s-${cd.id}`)){renderCountdowns();}
   });
 }
 
@@ -1036,30 +1066,93 @@ function startCdTick(){
   S.cdTickInterval=setInterval(tickCountdowns,1000);
 }
 
+// ══════════════════════════════════════
+//  STOP SESSION MODAL
+//  Shown whenever user manually pauses/stops a running session ≥ 60s
+// ══════════════════════════════════════
+window.openStopModal=function(){
+  const dur=S.elapsed;
+  S.pendingSessionSecs=dur;
+  document.getElementById('stopSessionNotes').value='';
+  document.getElementById('stopModalTitle').textContent=`⏸ ${formatDur(dur)} studied`;
+  document.getElementById('stopModalSub').textContent=`What would you like to do with this session?`;
+  document.getElementById('stopModal').classList.add('open');
+};
+
+window.stopModalSave=function(){
+  const notes=document.getElementById('stopSessionNotes').value.trim();
+  document.getElementById('stopModal').classList.remove('open');
+  if(S.pendingSessionSecs>0)saveSession(S.pendingSessionSecs,notes);
+  S.pendingSessionSecs=0;
+  S.elapsed=0;
+  S.continuousStudy=0;
+  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
+  updateTimerDisplay();updateControls();updateFsDisplay();renderPomoDots();
+};
+
+window.stopModalContinue=function(){
+  document.getElementById('stopModal').classList.remove('open');
+  S.pendingSessionSecs=0;
+  // Resume the timer from where it left off
+  const t0=Date.now()-(S.elapsed*1000);
+  S.running=true;
+  S.interval=setInterval(()=>{
+    S.elapsed=Math.floor((Date.now()-t0)/1000);
+    S.continuousStudy++;
+    if(S.mode!=='pomodoro'&&S.continuousStudy===5400){triggerBreakEnforcer();return;}
+    const limit=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=limit){
+      clearInterval(S.interval);S.running=false;
+      if(S.mode==='pomodoro'){handlePomoPhaseEnd();}
+      else{S.pendingSessionSecs=S.elapsed;S.elapsed=0;playDone();openNotesModal();}
+    }
+    updateTimerDisplay();updateControls();updateFsDisplay();
+  },500);
+  updateTimerDisplay();updateControls();updateFsDisplay();
+};
+
+window.stopModalDiscard=function(){
+  document.getElementById('stopModal').classList.remove('open');
+  S.pendingSessionSecs=0;
+  S.elapsed=0;
+  S.continuousStudy=0;
+  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
+  updateTimerDisplay();updateControls();updateFsDisplay();renderPomoDots();
+};
+
 // ── TIMER ──
 window.startStop=function(){
   if(S.running){
-    clearInterval(S.interval);S.running=false;
-    updateTimerDisplay();updateControls();updateFsDisplay();
-  }else{
-    if(S.mode==='pomodoro'&&S.pomoPhase==='break')return skipBreak();
-    S.running=true;
-    const t0=Date.now()-(S.elapsed*1000);
-    S.interval=setInterval(()=>{
-      S.elapsed=Math.floor((Date.now()-t0)/1000);
-      S.continuousStudy++;
-      if(S.mode!=='pomodoro'&&S.continuousStudy===5400){triggerBreakEnforcer();return;}
-      const limit=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
-      if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=limit){
-        clearInterval(S.interval);S.running=false;
-        if(S.mode==='pomodoro'){handlePomoPhaseEnd();}
-        else{S.pendingSessionSecs=S.elapsed;S.elapsed=0;playDone();openNotesModal();}
-      }
+    // User manually paused — show stop modal if session is worth saving (≥60s)
+    clearInterval(S.interval);
+    S.running=false;
+    if(S.elapsed>=60){
+      openStopModal();
+    }else{
+      // Too short — just pause silently
       updateTimerDisplay();updateControls();updateFsDisplay();
-    },500);
-    updateTimerDisplay();updateControls();updateFsDisplay();
+    }
+    return;
   }
+  // Start fresh
+  if(S.mode==='pomodoro'&&S.pomoPhase==='break')return skipBreak();
+  S.running=true;
+  const t0=Date.now()-(S.elapsed*1000);
+  S.interval=setInterval(()=>{
+    S.elapsed=Math.floor((Date.now()-t0)/1000);
+    S.continuousStudy++;
+    if(S.mode!=='pomodoro'&&S.continuousStudy===5400){triggerBreakEnforcer();return;}
+    const limit=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=limit){
+      clearInterval(S.interval);S.running=false;
+      if(S.mode==='pomodoro'){handlePomoPhaseEnd();}
+      else{S.pendingSessionSecs=S.elapsed;S.elapsed=0;playDone();openNotesModal();}
+    }
+    updateTimerDisplay();updateControls();updateFsDisplay();
+  },500);
+  updateTimerDisplay();updateControls();updateFsDisplay();
 };
+
 window.resetTimer=function(){
   clearInterval(S.interval);S.running=false;S.elapsed=0;S.continuousStudy=0;
   if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
@@ -1129,6 +1222,8 @@ window.skipBreak=function(){
   closeBreakOverlay();
   if(S.mode==='pomodoro'&&S.pomoPhase==='break'){S.pomoPhase='work';S.elapsed=0;openNotesModal();}
 };
+
+// Notes modal — only shown after timer auto-completes
 function openNotesModal(){
   document.getElementById('sessionNotesInput').value='';
   document.getElementById('notesModalSub').textContent=`${formatDur(S.pendingSessionSecs)} session complete! Add a quick note (optional).`;
@@ -1140,6 +1235,7 @@ window.saveNoteAndClose=function(notes){
   S.pendingSessionSecs=0;S.elapsed=0;
   updateTimerDisplay();updateControls();
 };
+
 function getActivePreset(){return S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;}
 function updateTimerDisplay(){
   const disp=document.getElementById('timeDisplay'),lbl=document.getElementById('timeLabel');
