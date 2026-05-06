@@ -30,17 +30,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .pill:hover{border-color:var(--text3);color:var(--text);}
 .pill.danger:hover{border-color:var(--red);color:var(--red);}
 
-/* ══════════════════════════════════════
-   LANDING PAGE
-══════════════════════════════════════ */
+/* LANDING */
 #landingPage{min-height:100vh;display:flex;flex-direction:column;}
 .land-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:.5px solid var(--border);}
 .land-logo{font-size:16px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;}
 .land-nav-right{display:flex;gap:10px;align-items:center;}
 .land-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;outline:none;border:1px solid var(--border2);background:var(--bg);color:var(--text);transition:all .15s;font-family:inherit;}
 .land-btn:hover{background:var(--bg2);}
-.land-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);}
-.land-btn.primary:hover{opacity:.85;}
 @media(max-width:600px){.land-nav{padding:16px 20px;}}
 .land-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;}
 .land-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text2);margin-bottom:28px;font-weight:500;}
@@ -51,8 +47,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-cta{padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;outline:none;border:none;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:10px;}
 .land-cta.primary{background:var(--primary);color:var(--primary-text);}
 .land-cta.primary:hover{opacity:.85;}
-.land-cta.secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border2);}
-.land-cta.secondary:hover{background:var(--bg3);}
 .land-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:780px;width:100%;margin:0 auto;}
 @media(max-width:600px){.land-features{grid-template-columns:1fr 1fr;}}
 @media(max-width:400px){.land-features{grid-template-columns:1fr;}}
@@ -62,20 +56,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .land-feature-desc{font-size:11px;color:var(--text3);line-height:1.5;}
 .land-social{text-align:center;padding:48px 24px;border-top:.5px solid var(--border);}
 .land-social p{font-size:12px;color:var(--text3);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
-.land-avatars{display:flex;align-items:center;justify-content:center;gap:0;}
+.land-avatars{display:flex;align-items:center;justify-content:center;}
 .land-av{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg);margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);}
 .land-av:first-child{margin-left:0;}
 .land-social-text{font-size:13px;color:var(--text2);margin-top:12px;}
 .land-social-text strong{color:var(--text);}
 
-/* ══════════════════════════════════════
-   LOADING / AUTH
-══════════════════════════════════════ */
 .loading{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:13px;color:var(--text3);}
 
-/* ══════════════════════════════════════
-   MAIN APP
-══════════════════════════════════════ */
+/* APP LAYOUT */
 .main-app{display:none;}
 .app{max-width:720px;margin:0 auto;padding:36px 20px 100px;}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
@@ -160,7 +149,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-se
 .add-countdown-btn:hover{border-color:var(--text2);color:var(--text2);background:var(--bg2);}
 .countdown-done{background:linear-gradient(135deg,#eaf3de,#f0f9eb);border-color:var(--green2)!important;}
 [data-theme="dark"] .countdown-done{background:linear-gradient(135deg,#182810,#1e3818);border-color:var(--green3)!important;}
-.countdown-done .cd-num{color:var(--green3);}
 
 /* MODE TOGGLE */
 .mode-toggle{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;width:fit-content;margin-bottom:18px;}
@@ -188,7 +176,7 @@ textarea.task-input{resize:vertical;min-height:72px;}
 .sound-btn{padding:5px 12px;border:1px solid var(--border2);border-radius:16px;font-size:12px;color:var(--text2);cursor:pointer;background:var(--bg);transition:all .15s;outline:none;font-family:inherit;}
 .sound-btn.active{border-color:var(--text);background:var(--bg2);color:var(--text);}
 
-/* LOFI PLAYER */
+/* LOFI */
 .lofi-player{background:var(--bg2);border:.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
 .lofi-thumb{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .lofi-info{flex:1;min-width:0;}
@@ -205,12 +193,35 @@ textarea.task-input{resize:vertical;min-height:72px;}
 .timer-preset{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap;}
 .preset-btn{padding:5px 12px;border:1px solid var(--border2);border-radius:16px;font-size:12px;color:var(--text2);cursor:pointer;background:var(--bg);transition:all .15s;outline:none;font-family:inherit;}
 .preset-btn.selected{border-color:var(--text);color:var(--text);background:var(--bg2);}
-.controls{display:flex;justify-content:center;gap:12px;margin-top:16px;align-items:center;}
-.ctrl-btn{width:50px;height:50px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;color:var(--text);outline:none;}
-.ctrl-btn:hover{border-color:var(--text);background:var(--bg2);}
-.ctrl-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);width:62px;height:62px;font-size:22px;}
-.ctrl-btn.primary:hover{opacity:.8;}
-.ctrl-btn.danger:hover{border-color:var(--red);color:var(--red);}
+
+/* ── SESSION CONTROLS (3 buttons) ── */
+.session-controls{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:20px;}
+.session-btn-row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.sess-btn{display:flex;align-items:center;gap:7px;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;outline:none;transition:all .15s;font-family:inherit;border:1.5px solid var(--border2);}
+.sess-btn.start{background:var(--primary);color:var(--primary-text);border-color:var(--primary);padding:13px 32px;font-size:14px;}
+.sess-btn.start:hover{opacity:.85;}
+.sess-btn.start:disabled{opacity:.35;cursor:not-allowed;}
+.sess-btn.pause{background:var(--bg2);color:var(--text);border-color:var(--border2);}
+.sess-btn.pause:hover{border-color:var(--text2);background:var(--bg3);}
+.sess-btn.pause:disabled{opacity:.3;cursor:not-allowed;}
+.sess-btn.save{background:#eaf3de;color:#1e7a14;border-color:var(--green2);}
+.sess-btn.save:hover{background:#d4ecc4;border-color:var(--green3);}
+.sess-btn.save:disabled{opacity:.3;cursor:not-allowed;}
+[data-theme="dark"] .sess-btn.save{background:#182810;color:var(--green4);border-color:var(--green3);}
+[data-theme="dark"] .sess-btn.save:hover{background:#1e3818;}
+.sess-btn.fullscreen{background:var(--bg2);color:var(--text2);border-color:var(--border2);padding:11px 14px;}
+.sess-btn.fullscreen:hover{border-color:var(--text2);color:var(--text);}
+
+/* live session bar */
+.session-live-bar{width:100%;max-width:360px;background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.slb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s;}
+.slb-dot.idle{background:var(--border2);}
+.slb-dot.running{background:var(--green3);animation:pulse 1.4s infinite;}
+.slb-dot.paused{background:var(--gold);}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(.85);}}
+.slb-text{font-size:12px;color:var(--text2);flex:1;}
+.slb-time{font-size:13px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+
 .sbadge{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;background:var(--bg3);color:var(--text3);}
 .sbadge.active{background:#eaf3de;color:#2d5e10;}
 .sbadge.paused{background:#fff8e6;color:#946800;}
@@ -251,21 +262,10 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 .modal-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);}
 .modal-btn:hover{opacity:.8;}
 
-/* STOP SESSION MODAL */
-.stop-modal-actions{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
-.stop-action-btn{width:100%;text-align:left;padding:13px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--bg2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;transition:all .15s;outline:none;}
-.stop-action-btn:hover{border-color:var(--text2);background:var(--bg3);}
-.stop-action-btn.save-btn{border-color:var(--green2);}
-.stop-action-btn.save-btn:hover{border-color:var(--green3);background:#eaf3de;}
-[data-theme="dark"] .stop-action-btn.save-btn:hover{background:#182810;}
-.stop-action-btn.discard-btn:hover{border-color:var(--red);}
-.stop-action-btn.discard-btn:hover .sab-label{color:var(--red);}
-.sab-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
-.sab-text{flex:1;}
-.sab-label{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:2px;}
-.sab-sub{font-size:11px;color:var(--text3);}
-.stop-note-wrap{margin-bottom:14px;}
-.stop-note-label{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+/* SAVE SESSION MODAL */
+.save-modal-note{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.save-total-tag{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);margin-bottom:14px;}
+.save-total-tag strong{color:var(--text);}
 
 /* COUNTDOWN MODAL */
 .emoji-picker{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
@@ -353,7 +353,9 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 .fs-btn:hover{border-color:var(--text);background:var(--bg2);}
 .fs-btn.primary{background:var(--primary);color:var(--primary-text);border-color:var(--primary);width:66px;height:66px;font-size:24px;}
 .fs-btn.primary:hover{opacity:.8;}
-.fs-btn.danger:hover{border-color:var(--red);color:var(--red);}
+.fs-btn.save-fs{background:#eaf3de;color:#1e7a14;border-color:var(--green2);}
+[data-theme="dark"] .fs-btn.save-fs{background:#182810;color:var(--green4);border-color:var(--green3);}
+.fs-btn.save-fs:hover{opacity:.85;}
 .fs-quote{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--text3);font-style:italic;max-width:380px;text-align:center;line-height:1.7;width:90%;}
 .fs-shortcuts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text3);display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
 .fs-key{background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;font-size:10px;font-family:monospace;color:var(--text2);}
@@ -373,7 +375,7 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 </head>
 <body>
 
-<!-- LANDING PAGE -->
+<!-- LANDING -->
 <div id="landingPage">
   <nav class="land-nav">
     <div class="land-logo">📚 StudyTrack</div>
@@ -396,12 +398,12 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       </button>
     </div>
     <div class="land-features">
-      <div class="land-feature"><div class="land-feature-icon">📅</div><div class="land-feature-title">Activity Calendar</div><div class="land-feature-desc">GitHub-style heatmap showing every study day across the year.</div></div>
+      <div class="land-feature"><div class="land-feature-icon">📅</div><div class="land-feature-title">Activity Calendar</div><div class="land-feature-desc">GitHub-style heatmap. 5min × 12 sessions = 1h total, all counted.</div></div>
       <div class="land-feature"><div class="land-feature-icon">⏰</div><div class="land-feature-title">Countdown Timer</div><div class="land-feature-desc">Add exams and deadlines. Watch the days tick down in real time.</div></div>
       <div class="land-feature"><div class="land-feature-icon">📊</div><div class="land-feature-title">Weekly Recap</div><div class="land-feature-desc">Screen Time-style breakdown with focus score and subject stats.</div></div>
-      <div class="land-feature"><div class="land-feature-icon">🍅</div><div class="land-feature-title">Pomodoro Mode</div><div class="land-feature-desc">Auto work/break cycles with a built-in break enforcer.</div></div>
+      <div class="land-feature"><div class="land-feature-icon">🍅</div><div class="land-feature-title">Pomodoro Mode</div><div class="land-feature-desc">Auto work/break cycles with a built-in 90-min break enforcer.</div></div>
       <div class="land-feature"><div class="land-feature-icon">🏆</div><div class="land-feature-title">Leaderboard</div><div class="land-feature-desc">Compete with friends on weekly study hours. No excuses.</div></div>
-      <div class="land-feature"><div class="land-feature-icon">🎵</div><div class="land-feature-title">Lo-fi Radio</div><div class="land-feature-desc">Built-in music player with study-friendly stations. No Spotify needed.</div></div>
+      <div class="land-feature"><div class="land-feature-icon">🎵</div><div class="land-feature-title">Lo-fi Radio</div><div class="land-feature-desc">Built-in music player with study-friendly stations.</div></div>
     </div>
   </div>
   <div class="land-social">
@@ -431,52 +433,16 @@ textarea.modal-input{resize:vertical;min-height:80px;}
   <button class="pill" style="margin-top:24px;" onclick="skipBreak()">Skip break →</button>
 </div>
 
-<!-- ══════════════════════════════════════
-     STOP SESSION MODAL (new — replaces simple pause)
-══════════════════════════════════════ -->
-<div class="modal-backdrop" id="stopModal">
+<!-- SAVE SESSION MODAL -->
+<div class="modal-backdrop" id="saveModal">
   <div class="modal">
-    <h3 id="stopModalTitle">⏸ Session paused</h3>
-    <p id="stopModalSub" style="margin-bottom:16px;font-size:13px;color:var(--text3);"></p>
-    <div class="stop-note-wrap">
-      <div class="stop-note-label">Session note (optional)</div>
-      <textarea class="modal-input" id="stopSessionNotes" placeholder="What did you cover? e.g. Chapters 4–6, integration by parts…" style="margin-bottom:0;"></textarea>
-    </div>
-    <div class="stop-modal-actions">
-      <button class="stop-action-btn save-btn" onclick="stopModalSave()">
-        <span class="sab-icon">💾</span>
-        <span class="sab-text">
-          <span class="sab-label">Save &amp; finish session</span>
-          <span class="sab-sub">Log this session and reset the timer</span>
-        </span>
-      </button>
-      <button class="stop-action-btn" onclick="stopModalContinue()">
-        <span class="sab-icon">▶</span>
-        <span class="sab-text">
-          <span class="sab-label">Continue session</span>
-          <span class="sab-sub">Resume right where you left off</span>
-        </span>
-      </button>
-      <button class="stop-action-btn discard-btn" onclick="stopModalDiscard()">
-        <span class="sab-icon">🗑</span>
-        <span class="sab-text">
-          <span class="sab-label">Discard</span>
-          <span class="sab-sub">Throw away this session without saving</span>
-        </span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- SESSION NOTES MODAL (timer auto-completion only) -->
-<div class="modal-backdrop" id="notesModal">
-  <div class="modal">
-    <h3>🎉 Session complete!</h3>
-    <p id="notesModalSub">Add a note about what you covered (optional).</p>
-    <textarea class="modal-input" id="sessionNotesInput" placeholder="e.g. Covered chapters 4–6, practiced integration by parts..."></textarea>
+    <h3 id="saveModalTitle">💾 Save session</h3>
+    <div class="save-total-tag" id="saveTodayTag"></div>
+    <div class="save-modal-note">Session note (optional)</div>
+    <textarea class="modal-input" id="saveNotesInput" placeholder="What did you cover? e.g. Chapters 4–6, integration by parts…"></textarea>
     <div class="modal-btns">
-      <button class="modal-btn" onclick="saveNoteAndClose('')">Skip</button>
-      <button class="modal-btn primary" onclick="saveNoteAndClose(document.getElementById('sessionNotesInput').value)">Save</button>
+      <button class="modal-btn" onclick="discardSession()">Discard</button>
+      <button class="modal-btn primary" onclick="confirmSave()">Save session</button>
     </div>
   </div>
 </div>
@@ -519,7 +485,7 @@ textarea.modal-input{resize:vertical;min-height:80px;}
   </div>
 </div>
 
-<!-- ADD COUNTDOWN MODAL -->
+<!-- COUNTDOWN MODAL -->
 <div class="modal-backdrop" id="countdownModal">
   <div class="modal">
     <h3>Add countdown</h3>
@@ -551,22 +517,21 @@ textarea.modal-input{resize:vertical;min-height:80px;}
   </div>
   <div class="fs-sublabel" id="fsSublabel">timer</div>
   <div class="fs-controls">
-    <button class="fs-btn danger" id="fsResetBtn" onclick="resetTimer()" style="display:none;">✕</button>
-    <button class="fs-btn primary" id="fsStartBtn" onclick="startStop()">▶</button>
-    <button class="fs-btn" onclick="exitFullscreen()" style="font-size:13px;">⊠</button>
+    <button class="fs-btn" id="fsPauseBtn" onclick="pauseSession()" title="Pause (Space)" style="display:none;">⏸</button>
+    <button class="fs-btn primary" id="fsStartBtn" onclick="startSession()" title="Start (Space)">▶</button>
+    <button class="fs-btn save-fs" id="fsSaveBtn" onclick="openSaveModal()" title="Save session" style="display:none;">💾</button>
+    <button class="fs-btn" onclick="exitFullscreen()" style="font-size:13px;" title="Exit (Esc)">⊠</button>
   </div>
   <div class="fs-pomo-row" id="fsPomoDots"></div>
   <div class="fs-quote" id="fsQuote"></div>
   <div class="fs-shortcuts">
-    <span><span class="fs-key">Space</span> pause/resume</span>
-    <span><span class="fs-key">R</span> reset</span>
+    <span><span class="fs-key">Space</span> start/pause</span>
+    <span><span class="fs-key">S</span> save</span>
     <span><span class="fs-key">Esc</span> exit</span>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MAIN APP
-══════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div class="main-app" id="mainApp">
   <div class="app">
     <div class="topbar">
@@ -701,15 +666,35 @@ textarea.modal-input{resize:vertical;min-height:80px;}
 
       <div class="pomo-status hidden" id="pomoStatus"></div>
 
-      <div class="controls">
-        <button class="ctrl-btn danger" id="resetBtn" onclick="resetTimer()" style="display:none;">✕</button>
-        <button class="ctrl-btn primary" id="startBtn" onclick="startStop()">▶</button>
-        <button class="ctrl-btn" onclick="enterFullscreen()" style="font-size:13px;">⊞</button>
-      </div>
+      <!-- ── SESSION CONTROLS ── -->
+      <div class="session-controls">
+        <!-- Live status bar -->
+        <div class="session-live-bar" id="livebar">
+          <div class="slb-dot idle" id="lbDot"></div>
+          <div class="slb-text" id="lbText">Ready to start</div>
+          <div class="slb-time" id="lbTime"></div>
+        </div>
 
-      <div style="text-align:center;margin-top:14px;">
-        <span class="sbadge" id="sessionBadge">Ready to study</span>
-        <div style="font-size:11px;color:var(--text3);margin-top:6px;" id="shortNote">All sessions are saved</div>
+        <!-- Idle state: just Start -->
+        <div class="session-btn-row" id="ctrlIdle">
+          <button class="sess-btn start" onclick="startSession()">▶ Start Session</button>
+          <button class="sess-btn fullscreen" onclick="enterFullscreen()" title="Focus mode">⊞</button>
+        </div>
+
+        <!-- Running state: Pause + Save + Fullscreen -->
+        <div class="session-btn-row hidden" id="ctrlRunning">
+          <button class="sess-btn pause" onclick="pauseSession()">⏸ Pause</button>
+          <button class="sess-btn save" onclick="openSaveModal()">💾 Save Session</button>
+          <button class="sess-btn fullscreen" onclick="enterFullscreen()" title="Focus mode">⊞</button>
+        </div>
+
+        <!-- Paused state: Resume + Save + Discard -->
+        <div class="session-btn-row hidden" id="ctrlPaused">
+          <button class="sess-btn start" onclick="startSession()">▶ Resume</button>
+          <button class="sess-btn save" onclick="openSaveModal()">💾 Save Session</button>
+          <button class="sess-btn" onclick="discardSession()" style="color:var(--text3);">✕ Discard</button>
+          <button class="sess-btn fullscreen" onclick="enterFullscreen()" title="Focus mode">⊞</button>
+        </div>
       </div>
     </div>
 
@@ -723,13 +708,9 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       <div id="recapContent"></div>
     </div>
 
-    <!-- RECORDS TAB -->
     <div id="tab-records" class="hidden"><div id="recordsContent"></div></div>
-
-    <!-- SOCIAL TAB -->
     <div id="tab-social" class="hidden"><div id="socialContent"></div></div>
 
-    <!-- HISTORY TAB -->
     <div id="tab-history" class="hidden">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
         <div class="section-label" style="margin-bottom:0;">All Sessions</div>
@@ -738,11 +719,10 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       <div class="session-list" id="fullSessionList"></div>
     </div>
 
-    <!-- TOOLS TAB -->
     <div id="tab-tools" class="hidden">
       <div class="section-label">Study Tools</div>
       <div class="tools-grid">
-        <a class="tool-card" href="https://notebooklm.google.com" target="_blank" rel="noopener"><div class="tool-card-icon">🎙</div><div class="tool-card-title">NotebookLM</div><div class="tool-card-desc">AI-powered notes: audio summaries, study guides, and quizzes from your material.</div></a>
+        <a class="tool-card" href="https://notebooklm.google.com" target="_blank" rel="noopener"><div class="tool-card-icon">🎙</div><div class="tool-card-title">NotebookLM</div><div class="tool-card-desc">AI-powered notes: audio summaries, study guides, and quizzes.</div></a>
         <a class="tool-card" href="https://scholar.google.com" target="_blank" rel="noopener"><div class="tool-card-icon">🔬</div><div class="tool-card-title">Google Scholar</div><div class="tool-card-desc">Search academic papers and citations for free.</div></a>
         <a class="tool-card" href="https://www.wolframalpha.com" target="_blank" rel="noopener"><div class="tool-card-icon">∑</div><div class="tool-card-title">Wolfram Alpha</div><div class="tool-card-desc">Solve math, science, and engineering problems step by step.</div></a>
         <a class="tool-card" href="https://ankiweb.net" target="_blank" rel="noopener"><div class="tool-card-icon">🃏</div><div class="tool-card-title">Anki Web</div><div class="tool-card-desc">Spaced repetition flashcards for long-term memorisation.</div></a>
@@ -816,9 +796,10 @@ const LOFI_STATIONS = [
 ];
 
 // ── STATE ──
+// sessionState: 'idle' | 'running' | 'paused'
 const S = {
   theme: localStorage.getItem('st_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),
-  mode:'timer', running:false, elapsed:0, preset:1500,
+  mode:'timer', sessionState:'idle', elapsed:0, preset:1500,
   interval:null, sessions:[], user:null,
   sound:'off', audioCtx:null, soundNode:null, fsOpen:false,
   subjects: JSON.parse(localStorage.getItem('st_subjects')||'[]'),
@@ -826,13 +807,17 @@ const S = {
   goals: JSON.parse(localStorage.getItem('st_goals')||'{"daily":4,"weekly":20}'),
   editingGoal:null, activeTab:'home', recapOffset:0,
   pomoWork:25*60, pomoBreak:5*60, pomoRound:0, pomoTotal:4, pomoPhase:'work',
-  continuousStudy:0, breakTimer:0, breakInterval2:null,
-  pendingSessionSecs:0,
+  // FIX: use real elapsed seconds for break enforcer, not tick count
+  sessionStartTs:0,   // timestamp when session started (adjusted for pauses)
+  totalPausedMs:0,    // ms spent paused in current session
+  pauseStartTs:0,     // when we entered pause
+  breakFired:false,   // whether 90min break has fired this session
+  breakTimer:0, breakInterval2:null,
   lofiPlaying:false, lofiStation:0,
   groupId: localStorage.getItem('st_groupId')||null,
   countdowns: JSON.parse(localStorage.getItem('st_countdowns')||'[]'),
-  selectedCdEmoji: '📅',
-  cdTickInterval: null,
+  selectedCdEmoji:'📅',
+  cdTickInterval:null,
 };
 
 // ── HELPERS ──
@@ -843,13 +828,30 @@ function formatDur(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);if(h&
 function getLevel(s){const h=s/3600;if(!s||h<0.5)return 0;if(h<1)return 1;if(h<2)return 2;if(h<4)return 3;if(h<6)return 4;return 5;}
 function getLevelColor(l){return RING_COLORS_HEX[l]||RING_COLORS_HEX[0];}
 function buildCalMap(){const m={};S.sessions.forEach(s=>{m[s.date]=(m[s.date]||0)+s.duration;});return m;}
-function getStreak(){const map=buildCalMap(),t=new Date();let n=0;for(let i=0;i<365;i++){const d=new Date(t);d.setDate(d.getDate()-i);const k=dateKey(d);if(map[k]&&map[k]>=1800)n++;else if(i>0)break;}return n;}
+function getStreak(){
+  const map=buildCalMap(),t=new Date();let n=0;
+  // streak: any day where total studied > 0
+  for(let i=0;i<365;i++){
+    const d=new Date(t);d.setDate(d.getDate()-i);
+    const k=dateKey(d);
+    if(map[k]&&map[k]>0)n++;
+    else if(i>0)break;
+  }
+  return n;
+}
 function todayStudied(){const k=dateKey(new Date());return S.sessions.filter(s=>s.date===k).reduce((a,s)=>a+s.duration,0);}
 function weekStudied(off=0){const ws=weekStart(off),we=new Date(ws);we.setDate(we.getDate()+7);return S.sessions.filter(s=>s.date>=dateKey(ws)&&s.date<dateKey(we)).reduce((a,s)=>a+s.duration,0);}
 function ringOffset(e,p,c,mode){if(mode==='timer'||mode==='pomodoro')return c*(1-Math.min(e/Math.max(p,1),1));return 0;}
 function getSubjectById(id){return S.subjects.find(s=>s.id===id);}
 function weekStart(off=0){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay()+(off*7));return d;}
 function generateGroupId(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let id='';for(let i=0;i<6;i++)id+=c[Math.floor(Math.random()*c.length)];return id;}
+// Get elapsed seconds accounting for pauses
+function getElapsed(){
+  if(S.sessionState==='idle')return S.elapsed;
+  if(S.sessionState==='paused')return S.elapsed;
+  // running: real time since session start minus total paused time
+  return Math.floor((Date.now()-S.sessionStartTs-S.totalPausedMs)/1000);
+}
 
 // ── THEME ──
 function applyTheme(){
@@ -890,8 +892,8 @@ window.landSignIn=window.signInWithGoogle=async function(){
   }
 };
 window.signOut=async()=>{
-  clearInterval(S.interval);S.running=false;S.elapsed=0;stopSound();stopLofi();
-  clearInterval(S.cdTickInterval);
+  clearInterval(S.interval);S.sessionState='idle';S.elapsed=0;
+  stopSound();stopLofi();clearInterval(S.cdTickInterval);
   await fbSignOut(auth);
 };
 getRedirectResult(auth).catch(console.error);
@@ -904,7 +906,7 @@ onAuthStateChanged(auth,user=>{
     document.getElementById('mainApp').style.display='block';
     updateProfile(user);loadSessions(user.uid);publishUserToGroup(user);
     applyTheme();renderCalendar();renderSubjectTags();renderGoals();
-    updateTimerDisplay();updateControls();renderCountdowns();startCdTick();
+    updateTimerDisplay();updateSessionControls();renderCountdowns();startCdTick();
   }else{
     S.user=null;S.sessions=[];
     document.getElementById('mainApp').style.display='none';
@@ -936,8 +938,9 @@ function loadSessions(uid){
     if(S.activeTab==='records')renderRecords();
   });
 }
-async function saveSession(secs,notes=''){
-  if(!S.user)return;setSyncStatus(true);
+async function saveSessionToDb(secs,notes=''){
+  if(!S.user||secs<=0)return;
+  setSyncStatus(true);
   const task=document.getElementById('taskInput')?.value.trim()||'';
   try{
     await push(ref(db,`users/${S.user.uid}/sessions`),{
@@ -961,225 +964,169 @@ window.deleteSession=async function(id){
   setTimeout(()=>setSyncStatus(false),600);
 };
 
-// ══════════════════════════════════════
-//  COUNTDOWN FEATURE
-// ══════════════════════════════════════
-function saveCds(){localStorage.setItem('st_countdowns',JSON.stringify(S.countdowns));}
+// ════════════════════════════════════
+//  SESSION STATE MACHINE
+//  idle → running → paused → running
+//         ↓ (save/discard)
+//        idle
+// ════════════════════════════════════
 
-window.openCountdownModal=function(){
-  S.selectedCdEmoji='📅';
-  document.getElementById('cdNameInput').value='';
-  const tm=new Date(Date.now()+86400000);
-  tm.setHours(9,0,0,0);
-  document.getElementById('cdDateInput').value=tm.toISOString().slice(0,16);
-  renderEmojiPicker();
-  document.getElementById('countdownModal').classList.add('open');
-  setTimeout(()=>document.getElementById('cdNameInput').focus(),50);
-};
-
-function renderEmojiPicker(){
-  const el=document.getElementById('emojiPicker');if(!el)return;
-  el.innerHTML=COUNTDOWN_EMOJIS.map(e=>`<button class="emoji-opt${e===S.selectedCdEmoji?' selected':''}" onclick="selectCdEmoji('${e}')">${e}</button>`).join('');
-}
-window.selectCdEmoji=function(e){S.selectedCdEmoji=e;renderEmojiPicker();};
-
-window.saveCountdown=function(){
-  const name=document.getElementById('cdNameInput').value.trim();
-  const dateVal=document.getElementById('cdDateInput').value;
-  if(!name||!dateVal)return;
-  S.countdowns.push({id:Date.now().toString(),name,emoji:S.selectedCdEmoji,targetTs:new Date(dateVal).getTime()});
-  saveCds();closeModal('countdownModal');renderCountdowns();
-};
-
-window.deleteCountdown=function(id){
-  S.countdowns=S.countdowns.filter(c=>c.id!==id);
-  saveCds();renderCountdowns();
-};
-
-function getCdDiff(targetTs){
-  const diff=Math.max(0,targetTs-Date.now());
-  const total=Math.floor(diff/1000);
-  const d=Math.floor(total/86400);
-  const h=Math.floor((total%86400)/3600);
-  const m=Math.floor((total%3600)/60);
-  const s=total%60;
-  return{d,h,m,s,total,done:diff<=0};
-}
-
-function renderCountdowns(){
-  const el=document.getElementById('countdownList');if(!el)return;
-  if(!S.countdowns.length){el.innerHTML='';return;}
-  S.countdowns.sort((a,b)=>a.targetTs-b.targetTs);
-  el.innerHTML=S.countdowns.map(cd=>{
-    const{d,h,m,s,done}=getCdDiff(cd.targetTs);
-    const dateStr=new Date(cd.targetTs).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
-    const urgent=d===0&&!done;
-    const soon=d<=3&&!done;
-    if(done){
-      return`<div class="countdown-item countdown-done">
-        <div class="countdown-emoji">${cd.emoji}</div>
-        <div class="countdown-info">
-          <div class="countdown-name">${cd.name}</div>
-          <div class="countdown-date-label">🎉 ${dateStr}</div>
-        </div>
-        <div style="font-size:13px;color:var(--green3);font-weight:700;">Done!</div>
-        <button class="countdown-delete" onclick="deleteCountdown('${cd.id}')">✕</button>
-      </div>`;
-    }
-    const numClass=urgent?'cd-num urgent':soon?'cd-num soon':'cd-num';
-    return`<div class="countdown-item">
-      <div class="countdown-emoji">${cd.emoji}</div>
-      <div class="countdown-info">
-        <div class="countdown-name">${cd.name}</div>
-        <div class="countdown-date-label">${dateStr}</div>
-      </div>
-      <div class="countdown-units" id="cdu-${cd.id}">
-        ${d>0?`<div class="cd-unit"><div class="${numClass}" id="cd-d-${cd.id}">${pad(d)}</div><div class="cd-label">days</div></div><div class="cd-sep">:</div>`:''}
-        <div class="cd-unit"><div class="${numClass}" id="cd-h-${cd.id}">${pad(h)}</div><div class="cd-label">hrs</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="${numClass}" id="cd-m-${cd.id}">${pad(m)}</div><div class="cd-label">min</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="${numClass}" id="cd-s-${cd.id}">${pad(s)}</div><div class="cd-label">sec</div></div>
-      </div>
-      <button class="countdown-delete" onclick="deleteCountdown('${cd.id}')">✕</button>
-    </div>`;
-  }).join('');
-}
-
-function tickCountdowns(){
-  S.countdowns.forEach(cd=>{
-    const{d,h,m,s,done}=getCdDiff(cd.targetTs);
-    const dEl=document.getElementById(`cd-d-${cd.id}`);
-    const hEl=document.getElementById(`cd-h-${cd.id}`);
-    const mEl=document.getElementById(`cd-m-${cd.id}`);
-    const sEl=document.getElementById(`cd-s-${cd.id}`);
-    if(hEl)hEl.textContent=pad(h);
-    if(mEl)mEl.textContent=pad(m);
-    if(sEl)sEl.textContent=pad(s);
-    if(dEl)dEl.textContent=pad(d);
-    if(done&&document.getElementById(`cd-s-${cd.id}`)){renderCountdowns();}
-  });
-}
-
-function startCdTick(){
-  clearInterval(S.cdTickInterval);
-  S.cdTickInterval=setInterval(tickCountdowns,1000);
-}
-
-// ══════════════════════════════════════
-//  STOP SESSION MODAL
-//  Shown whenever user manually pauses/stops a running session ≥ 60s
-// ══════════════════════════════════════
-window.openStopModal=function(){
-  const dur=S.elapsed;
-  S.pendingSessionSecs=dur;
-  document.getElementById('stopSessionNotes').value='';
-  document.getElementById('stopModalTitle').textContent=`⏸ ${formatDur(dur)} studied`;
-  document.getElementById('stopModalSub').textContent=`What would you like to do with this session?`;
-  document.getElementById('stopModal').classList.add('open');
-};
-
-window.stopModalSave=function(){
-  const notes=document.getElementById('stopSessionNotes').value.trim();
-  document.getElementById('stopModal').classList.remove('open');
-  if(S.pendingSessionSecs>0)saveSession(S.pendingSessionSecs,notes);
-  S.pendingSessionSecs=0;
-  S.elapsed=0;
-  S.continuousStudy=0;
-  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
-  updateTimerDisplay();updateControls();updateFsDisplay();renderPomoDots();
-};
-
-window.stopModalContinue=function(){
-  document.getElementById('stopModal').classList.remove('open');
-  S.pendingSessionSecs=0;
-  // Resume the timer from where it left off
-  const t0=Date.now()-(S.elapsed*1000);
-  S.running=true;
-  S.interval=setInterval(()=>{
-    S.elapsed=Math.floor((Date.now()-t0)/1000);
-    S.continuousStudy++;
-    if(S.mode!=='pomodoro'&&S.continuousStudy===5400){triggerBreakEnforcer();return;}
-    const limit=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
-    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=limit){
-      clearInterval(S.interval);S.running=false;
-      if(S.mode==='pomodoro'){handlePomoPhaseEnd();}
-      else{S.pendingSessionSecs=S.elapsed;S.elapsed=0;playDone();openNotesModal();}
-    }
-    updateTimerDisplay();updateControls();updateFsDisplay();
-  },500);
-  updateTimerDisplay();updateControls();updateFsDisplay();
-};
-
-window.stopModalDiscard=function(){
-  document.getElementById('stopModal').classList.remove('open');
-  S.pendingSessionSecs=0;
-  S.elapsed=0;
-  S.continuousStudy=0;
-  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
-  updateTimerDisplay();updateControls();updateFsDisplay();renderPomoDots();
-};
-
-// ── TIMER ──
-window.startStop=function(){
-  if(S.running){
-    // User manually paused — show stop modal if session is worth saving (≥60s)
-    clearInterval(S.interval);
-    S.running=false;
-    if(S.elapsed>=60){
-      openStopModal();
-    }else{
-      // Too short — just pause silently
-      updateTimerDisplay();updateControls();updateFsDisplay();
-    }
-    return;
-  }
-  // Start fresh
+// START or RESUME
+window.startSession=function(){
+  if(S.sessionState==='running')return;
   if(S.mode==='pomodoro'&&S.pomoPhase==='break')return skipBreak();
-  S.running=true;
-  const t0=Date.now()-(S.elapsed*1000);
+
+  if(S.sessionState==='idle'){
+    // Fresh start
+    S.elapsed=0;
+    S.totalPausedMs=0;
+    S.breakFired=false;
+    S.sessionStartTs=Date.now();
+  }else if(S.sessionState==='paused'){
+    // Resume — add time we spent paused to offset
+    S.totalPausedMs+=Date.now()-S.pauseStartTs;
+  }
+
+  S.sessionState='running';
+  clearInterval(S.interval);
   S.interval=setInterval(()=>{
-    S.elapsed=Math.floor((Date.now()-t0)/1000);
-    S.continuousStudy++;
-    if(S.mode!=='pomodoro'&&S.continuousStudy===5400){triggerBreakEnforcer();return;}
+    S.elapsed=getElapsed();
+
+    // ── 90-min break enforcer (FIX: use real elapsed seconds, not tick count)
+    if(S.mode!=='pomodoro'&&!S.breakFired&&S.elapsed>=5400){
+      S.breakFired=true;
+      // Pause and show break — session time is preserved
+      S.sessionState='paused';
+      S.pauseStartTs=Date.now();
+      clearInterval(S.interval);
+      startBreakOverlay(10*60,false);
+      updateTimerDisplay();updateSessionControls();updateFsDisplay();
+      return;
+    }
+
+    // ── Timer/Pomodoro auto-complete
     const limit=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
     if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=limit){
-      clearInterval(S.interval);S.running=false;
-      if(S.mode==='pomodoro'){handlePomoPhaseEnd();}
-      else{S.pendingSessionSecs=S.elapsed;S.elapsed=0;playDone();openNotesModal();}
+      clearInterval(S.interval);
+      if(S.mode==='pomodoro'){
+        handlePomoPhaseEnd();
+      }else{
+        // Timer done — auto save
+        const secs=S.elapsed;
+        S.sessionState='idle';S.elapsed=0;
+        playDone();
+        saveSessionToDb(secs,'');
+      }
+      updateTimerDisplay();updateSessionControls();updateFsDisplay();
+      return;
     }
-    updateTimerDisplay();updateControls();updateFsDisplay();
-  },500);
-  updateTimerDisplay();updateControls();updateFsDisplay();
+
+    updateTimerDisplay();updateFsDisplay();
+  },1000); // FIX: use 1000ms not 500ms for accurate tick
+
+  updateTimerDisplay();updateSessionControls();updateFsDisplay();
 };
 
-window.resetTimer=function(){
-  clearInterval(S.interval);S.running=false;S.elapsed=0;S.continuousStudy=0;
-  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';}
-  updateTimerDisplay();updateControls();updateFsDisplay();
+// PAUSE
+window.pauseSession=function(){
+  if(S.sessionState!=='running')return;
+  clearInterval(S.interval);
+  S.elapsed=getElapsed(); // snapshot current elapsed
+  S.sessionState='paused';
+  S.pauseStartTs=Date.now();
+  updateTimerDisplay();updateSessionControls();updateFsDisplay();
 };
+
+// OPEN SAVE MODAL
+window.openSaveModal=function(){
+  if(S.sessionState==='running')pauseSession();
+  const secs=S.elapsed;
+  if(secs<=0){discardSession();return;}
+  const todayTotal=todayStudied()+secs;
+  document.getElementById('saveModalTitle').textContent=`💾 Save ${formatDur(secs)} session`;
+  document.getElementById('saveTodayTag').innerHTML=`Today's total after saving: <strong>${formatDur(todayTotal)}</strong>`;
+  document.getElementById('saveNotesInput').value='';
+  document.getElementById('saveModal').classList.add('open');
+  setTimeout(()=>document.getElementById('saveNotesInput').focus(),50);
+};
+
+// CONFIRM SAVE
+window.confirmSave=function(){
+  const notes=document.getElementById('saveNotesInput').value.trim();
+  const secs=S.elapsed;
+  document.getElementById('saveModal').classList.remove('open');
+  saveSessionToDb(secs,notes);
+  playDone();
+  // Reset
+  clearInterval(S.interval);
+  S.sessionState='idle';S.elapsed=0;S.totalPausedMs=0;S.breakFired=false;
+  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';renderPomoDots();}
+  updateTimerDisplay();updateSessionControls();updateFsDisplay();
+};
+
+// DISCARD
+window.discardSession=function(){
+  document.getElementById('saveModal').classList.remove('open');
+  clearInterval(S.interval);
+  S.sessionState='idle';S.elapsed=0;S.totalPausedMs=0;S.breakFired=false;
+  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';renderPomoDots();}
+  updateTimerDisplay();updateSessionControls();updateFsDisplay();
+};
+
+// UPDATE CONTROLS — shows correct button row based on state
+function updateSessionControls(){
+  const idle=S.sessionState==='idle';
+  const running=S.sessionState==='running';
+  const paused=S.sessionState==='paused';
+  document.getElementById('ctrlIdle').classList.toggle('hidden',!idle);
+  document.getElementById('ctrlRunning').classList.toggle('hidden',!running);
+  document.getElementById('ctrlPaused').classList.toggle('hidden',!paused);
+  // fullscreen buttons
+  const fsStart=document.getElementById('fsStartBtn');
+  const fsPause=document.getElementById('fsPauseBtn');
+  const fsSave=document.getElementById('fsSaveBtn');
+  if(fsStart){fsStart.style.display=running?'none':'flex';fsStart.textContent=paused?'▶ Resume':'▶';}
+  if(fsPause)fsPause.style.display=running?'flex':'none';
+  if(fsSave)fsSave.style.display=(running||paused)?'flex':'none';
+  // live bar
+  const dot=document.getElementById('lbDot'),text=document.getElementById('lbText'),time=document.getElementById('lbTime');
+  if(dot){dot.className='slb-dot '+(running?'running':paused?'paused':'idle');}
+  if(text){text.textContent=running?'Session in progress':paused?'Session paused — click Resume to continue':'Ready to start';}
+  if(time){time.textContent=S.elapsed>0?formatDur(S.elapsed):'';}
+}
+
 window.setPreset=function(s){
-  if(S.running)return;S.preset=s;S.elapsed=0;
+  if(S.sessionState!=='idle')return;
+  S.preset=s;S.elapsed=0;
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('selected',+b.getAttribute('onclick').match(/\d+/)[0]===s));
-  updateTimerDisplay();updateControls();
+  updateTimerDisplay();updateSessionControls();
 };
 window.switchMode=function(m){
-  if(S.running)return;S.mode=m;S.elapsed=0;S.pomoRound=0;S.pomoPhase='work';S.continuousStudy=0;
+  if(S.sessionState!=='idle')return;
+  S.mode=m;S.elapsed=0;S.pomoRound=0;S.pomoPhase='work';S.breakFired=false;
   ['timer','stopwatch','pomodoro'].forEach(x=>document.getElementById(x+'Btn').classList.toggle('active',x===m));
   document.getElementById('presetRow').style.display=m==='timer'?'flex':'none';
   document.getElementById('pomoStatus').classList.toggle('hidden',m!=='pomodoro');
-  updateTimerDisplay();updateControls();renderPomoDots();
+  updateTimerDisplay();updateSessionControls();renderPomoDots();
 };
+
 function handlePomoPhaseEnd(){
   if(S.pomoPhase==='work'){
-    S.pendingSessionSecs=S.pomoWork;playDone();S.pomoRound++;S.pomoPhase='break';S.elapsed=0;
+    const secs=S.pomoWork;
+    saveSessionToDb(secs,'');
+    playDone();
+    S.pomoRound++;S.pomoPhase='break';S.elapsed=0;
+    S.sessionState='paused';S.pauseStartTs=Date.now();
     startBreakOverlay(S.pomoBreak,true);
   }else{
-    S.pomoPhase='work';S.elapsed=0;closeBreakOverlay();openNotesModal();
+    S.pomoPhase='work';S.elapsed=0;
+    S.sessionState='idle';
+    closeBreakOverlay();
     if(S.pomoRound>=S.pomoTotal)S.pomoRound=0;
   }
-  renderPomoDots();updateFsDisplay();
+  renderPomoDots();updateSessionControls();
 }
+
 function renderPomoDots(){
   const el=document.getElementById('pomoStatus'),fs=document.getElementById('fsPomoDots');
   if(!el)return;
@@ -1190,11 +1137,7 @@ function renderPomoDots(){
   }
   el.innerHTML=html;if(fs)fs.innerHTML=html.replace(/pomo-dot/g,'fs-pomo-dot');
 }
-function triggerBreakEnforcer(){
-  if(S.running){clearInterval(S.interval);S.running=false;}
-  S.pendingSessionSecs=S.elapsed;S.elapsed=0;S.continuousStudy=0;
-  startBreakOverlay(10*60,false);
-}
+
 function startBreakOverlay(secs,isPomo){
   const tip=BREAK_TIPS[Math.floor(Math.random()*BREAK_TIPS.length)];
   document.getElementById('breakTip').textContent=tip;
@@ -1220,47 +1163,32 @@ function startBreakOverlay(secs,isPomo){
 function closeBreakOverlay(){clearInterval(S.breakInterval2);document.getElementById('breakOverlay').classList.remove('open');}
 window.skipBreak=function(){
   closeBreakOverlay();
-  if(S.mode==='pomodoro'&&S.pomoPhase==='break'){S.pomoPhase='work';S.elapsed=0;openNotesModal();}
+  if(S.mode==='pomodoro'&&S.pomoPhase==='break'){
+    S.pomoPhase='work';S.elapsed=0;S.sessionState='idle';
+    updateTimerDisplay();updateSessionControls();
+  }else{
+    // After 90-min break: session still paused, user can resume
+    updateSessionControls();
+  }
 };
 
-// Notes modal — only shown after timer auto-completes
-function openNotesModal(){
-  document.getElementById('sessionNotesInput').value='';
-  document.getElementById('notesModalSub').textContent=`${formatDur(S.pendingSessionSecs)} session complete! Add a quick note (optional).`;
-  document.getElementById('notesModal').classList.add('open');
-}
-window.saveNoteAndClose=function(notes){
-  document.getElementById('notesModal').classList.remove('open');
-  if(S.pendingSessionSecs>0)saveSession(S.pendingSessionSecs,notes.trim());
-  S.pendingSessionSecs=0;S.elapsed=0;
-  updateTimerDisplay();updateControls();
-};
-
-function getActivePreset(){return S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;}
+// ── TIMER DISPLAY ──
 function updateTimerDisplay(){
   const disp=document.getElementById('timeDisplay'),lbl=document.getElementById('timeLabel');
-  const ring=document.getElementById('progressRing'),badge=document.getElementById('sessionBadge'),note=document.getElementById('shortNote');
+  const ring=document.getElementById('progressRing');
   if(!disp)return;
-  const p=getActivePreset();
-  const rem=S.mode==='stopwatch'?S.elapsed:Math.max(0,p-S.elapsed);
+  const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+  const e=S.elapsed;
+  const rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   disp.textContent=formatTime(rem);
-  const lvl=getLevel(S.elapsed);
-  if(ring){ring.style.stroke=RING_COLORS_CSS[Math.min(lvl,5)];ring.style.strokeDashoffset=ringOffset(S.elapsed,p,CIRC_S,S.mode);}
+  const lvl=getLevel(e);
+  if(ring){ring.style.stroke=RING_COLORS_CSS[Math.min(lvl,5)];ring.style.strokeDashoffset=ringOffset(e,p,CIRC_S,S.mode);}
   const ml=S.mode==='pomodoro'?(S.pomoPhase==='work'?'focus round':'break time'):(S.mode==='timer'?'timer':'stopwatch');
-  if(lbl)lbl.textContent=S.running?ml:(S.elapsed>0?'paused':ml);
-  if(badge){
-    if(S.running&&S.mode==='pomodoro'&&S.pomoPhase==='break'){badge.className='sbadge break';badge.textContent='☕ Break time';}
-    else if(S.running){badge.className='sbadge active';badge.textContent=S.elapsed>=1800?'● Session in progress':'● Warming up...';}
-    else if(S.elapsed>0){badge.className='sbadge paused';badge.textContent='⏸ Paused — click ▶ to resume';}
-    else{badge.className='sbadge';badge.textContent=S.mode==='pomodoro'?`🍅 ${S.pomoTotal} rounds of 25m`:'Ready to study';}
-  }
-  if(note)note.style.display='block';
+  if(lbl)lbl.textContent=S.sessionState==='running'?ml:(S.sessionState==='paused'?'paused':ml);
+  // live bar time
+  const lt=document.getElementById('lbTime');if(lt)lt.textContent=e>0?formatDur(e):'';
 }
-function updateControls(){
-  const sb=document.getElementById('startBtn'),rb=document.getElementById('resetBtn');
-  if(sb)sb.textContent=S.running?'⏸':'▶';
-  if(rb)rb.style.display=(S.running||S.elapsed>0)?'flex':'none';
-}
+
 function updateStats(){
   const total=S.sessions.reduce((a,s)=>a+s.duration,0)/3600;
   document.getElementById('statHours').textContent=total.toFixed(1);
@@ -1299,7 +1227,7 @@ function renderGoals(){
 // ── FULLSCREEN ──
 window.enterFullscreen=function(){
   S.fsOpen=true;document.getElementById('fsOverlay').classList.add('open');
-  updateFsDisplay();renderPomoDots();
+  updateFsDisplay();renderPomoDots();updateSessionControls();
   const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
   document.getElementById('fsQuote').textContent=`"${q[0]}" — ${q[1]}`;
   document.documentElement.requestFullscreen?.().catch(()=>{});
@@ -1308,17 +1236,16 @@ window.exitFullscreen=function(){S.fsOpen=false;document.getElementById('fsOverl
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&S.fsOpen)exitFullscreen();});
 function updateFsDisplay(){
   const ft=document.getElementById('fsTime'),fl=document.getElementById('fsSublabel');
-  const fr=document.getElementById('fsRing'),fsb=document.getElementById('fsStartBtn'),frb=document.getElementById('fsResetBtn');
-  const tl=document.getElementById('fsTaskLabel');if(!ft)return;
-  const p=getActivePreset();
-  const rem=S.mode==='stopwatch'?S.elapsed:Math.max(0,p-S.elapsed);
+  const fr=document.getElementById('fsRing'),tl=document.getElementById('fsTaskLabel');
+  if(!ft)return;
+  const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+  const e=S.elapsed;
+  const rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   ft.textContent=formatTime(rem);
-  const lvl=getLevel(S.elapsed);
+  const lvl=getLevel(e);
   ft.style.color=lvl>=4?'var(--green4)':lvl>=3?'var(--green3)':lvl>=2?'var(--green2)':'var(--text)';
-  if(fl)fl.textContent=S.running?(S.mode==='pomodoro'?(S.pomoPhase==='work'?'focus round':'break time'):(S.mode==='timer'?'focus time':'elapsed')):(S.elapsed>0?'paused':S.mode);
-  if(fr){fr.style.stroke=RING_COLORS_CSS[Math.min(lvl,5)];fr.style.strokeDashoffset=ringOffset(S.elapsed,p,CIRC_F,S.mode);}
-  if(fsb)fsb.textContent=S.running?'⏸':'▶';
-  if(frb)frb.style.display=(S.running||S.elapsed>0)?'flex':'none';
+  if(fl)fl.textContent=S.sessionState==='running'?(S.mode==='timer'?'focus time':S.mode==='pomodoro'?'focus round':'elapsed'):(S.sessionState==='paused'?'paused':S.mode);
+  if(fr){fr.style.stroke=RING_COLORS_CSS[Math.min(lvl,5)];fr.style.strokeDashoffset=ringOffset(e,p,CIRC_F,S.mode);}
   if(tl){const task=document.getElementById('taskInput')?.value.trim();const subj=getSubjectById(S.selectedSubj);let label=subj?`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${subj.color};margin-right:6px;"></span>${subj.name}${task?' · ':''}`:'' ;tl.innerHTML=label+(task||'');}
 }
 
@@ -1365,6 +1292,56 @@ window.selectColor=function(c){S.newSubjColor=c;renderColorSwatches();};
 window.selectSubject=function(id){S.selectedSubj=S.selectedSubj===id?null:id;renderSubjectTags();};
 function renderSubjectTags(){const el=document.getElementById('subjectTagsEl');if(!el)return;let html=S.subjects.map(s=>`<button class="subject-tag${S.selectedSubj===s.id?' selected':''}" style="background:${s.color}22;color:${s.color};" onclick="selectSubject('${s.id}')">${s.name}</button>`).join('');html+=`<button class="add-subject-btn" onclick="openSubjectModal()">+ Add</button>`;el.innerHTML=html;}
 
+// ── COUNTDOWN ──
+function saveCds(){localStorage.setItem('st_countdowns',JSON.stringify(S.countdowns));}
+window.openCountdownModal=function(){
+  S.selectedCdEmoji='📅';
+  document.getElementById('cdNameInput').value='';
+  const tm=new Date(Date.now()+86400000);tm.setHours(9,0,0,0);
+  document.getElementById('cdDateInput').value=tm.toISOString().slice(0,16);
+  renderEmojiPicker();document.getElementById('countdownModal').classList.add('open');
+  setTimeout(()=>document.getElementById('cdNameInput').focus(),50);
+};
+function renderEmojiPicker(){const el=document.getElementById('emojiPicker');if(!el)return;el.innerHTML=COUNTDOWN_EMOJIS.map(e=>`<button class="emoji-opt${e===S.selectedCdEmoji?' selected':''}" onclick="selectCdEmoji('${e}')">${e}</button>`).join('');}
+window.selectCdEmoji=function(e){S.selectedCdEmoji=e;renderEmojiPicker();};
+window.saveCountdown=function(){
+  const name=document.getElementById('cdNameInput').value.trim(),dateVal=document.getElementById('cdDateInput').value;
+  if(!name||!dateVal)return;
+  S.countdowns.push({id:Date.now().toString(),name,emoji:S.selectedCdEmoji,targetTs:new Date(dateVal).getTime()});
+  saveCds();closeModal('countdownModal');renderCountdowns();
+};
+window.deleteCountdown=function(id){S.countdowns=S.countdowns.filter(c=>c.id!==id);saveCds();renderCountdowns();};
+function getCdDiff(ts){
+  const diff=Math.max(0,ts-Date.now()),total=Math.floor(diff/1000);
+  return{d:Math.floor(total/86400),h:Math.floor((total%86400)/3600),m:Math.floor((total%3600)/60),s:total%60,done:diff<=0};
+}
+function renderCountdowns(){
+  const el=document.getElementById('countdownList');if(!el)return;
+  if(!S.countdowns.length){el.innerHTML='';return;}
+  S.countdowns.sort((a,b)=>a.targetTs-b.targetTs);
+  el.innerHTML=S.countdowns.map(cd=>{
+    const{d,h,m,s,done}=getCdDiff(cd.targetTs);
+    const dateStr=new Date(cd.targetTs).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+    if(done)return`<div class="countdown-item countdown-done"><div class="countdown-emoji">${cd.emoji}</div><div class="countdown-info"><div class="countdown-name">${cd.name}</div><div class="countdown-date-label">🎉 ${dateStr}</div></div><div style="font-size:13px;color:var(--green3);font-weight:700;">Done!</div><button class="countdown-delete" onclick="deleteCountdown('${cd.id}')">✕</button></div>`;
+    const nc=d===0?'cd-num urgent':d<=3?'cd-num soon':'cd-num';
+    return`<div class="countdown-item"><div class="countdown-emoji">${cd.emoji}</div><div class="countdown-info"><div class="countdown-name">${cd.name}</div><div class="countdown-date-label">${dateStr}</div></div><div class="countdown-units">${d>0?`<div class="cd-unit"><div class="${nc}" id="cd-d-${cd.id}">${pad(d)}</div><div class="cd-label">days</div></div><div class="cd-sep">:</div>`:''}<div class="cd-unit"><div class="${nc}" id="cd-h-${cd.id}">${pad(h)}</div><div class="cd-label">hrs</div></div><div class="cd-sep">:</div><div class="cd-unit"><div class="${nc}" id="cd-m-${cd.id}">${pad(m)}</div><div class="cd-label">min</div></div><div class="cd-sep">:</div><div class="cd-unit"><div class="${nc}" id="cd-s-${cd.id}">${pad(s)}</div><div class="cd-label">sec</div></div></div><button class="countdown-delete" onclick="deleteCountdown('${cd.id}')">✕</button></div>`;
+  }).join('');
+}
+function tickCountdowns(){
+  S.countdowns.forEach(cd=>{
+    const{d,h,m,s,done}=getCdDiff(cd.targetTs);
+    const dEl=document.getElementById(`cd-d-${cd.id}`);
+    if(document.getElementById(`cd-s-${cd.id}`)){
+      if(document.getElementById(`cd-h-${cd.id}`))document.getElementById(`cd-h-${cd.id}`).textContent=pad(h);
+      if(document.getElementById(`cd-m-${cd.id}`))document.getElementById(`cd-m-${cd.id}`).textContent=pad(m);
+      document.getElementById(`cd-s-${cd.id}`).textContent=pad(s);
+      if(dEl)dEl.textContent=pad(d);
+      if(done)renderCountdowns();
+    }
+  });
+}
+function startCdTick(){clearInterval(S.cdTickInterval);S.cdTickInterval=setInterval(tickCountdowns,1000);}
+
 // ── RECAP ──
 window.recapShift=function(dir){S.recapOffset+=dir;if(S.recapOffset>0)S.recapOffset=0;renderRecap();};
 function renderRecap(){
@@ -1378,7 +1355,7 @@ function renderRecap(){
   const total=wSess.reduce((a,s)=>a+s.duration,0);
   const daily=dayKeys.map(k=>wSess.filter(s=>s.date===k).reduce((a,s)=>a+s.duration,0));
   const maxDay=Math.max(...daily,1),bestIdx=daily.indexOf(Math.max(...daily));
-  const active=daily.filter(s=>s>=1800).length,todayKey2=dateKey(new Date());
+  const active=daily.filter(s=>s>0).length,todayKey2=dateKey(new Date());
   const subjMap={};wSess.forEach(s=>{const sid=s.subjectId||'__none';subjMap[sid]=(subjMap[sid]||0)+s.duration;});
   const subjRows=Object.entries(subjMap).sort((a,b)=>b[1]-a[1]).map(([sid,secs])=>{const subj=getSubjectById(sid);return{name:subj?subj.name:'Untagged',color:subj?subj.color:'var(--text3)',secs,pct:total>0?Math.round(secs/total*100):0};});
   if(!total){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div>No sessions this week yet.<br>Start a study session to see your recap!</div>`;return;}
@@ -1419,7 +1396,7 @@ function renderRecords(){
   const avgSess=S.sessions.length?Math.round(totalSecs/S.sessions.length):0;
   const wSess=S.sessions.filter(s=>{const ws=weekStart(0);const we=new Date(ws);we.setDate(we.getDate()+7);return s.date>=dateKey(ws)&&s.date<dateKey(we);});
   const wTotal=wSess.reduce((a,s)=>a+s.duration,0);
-  const wActive=Array.from({length:7},(_,i)=>{const d=new Date(weekStart(0));d.setDate(d.getDate()+i);return dateKey(d);}).filter(k=>calMap[k]&&calMap[k]>=1800).length;
+  const wActive=Array.from({length:7},(_,i)=>{const d=new Date(weekStart(0));d.setDate(d.getDate()+i);return dateKey(d);}).filter(k=>calMap[k]&&calMap[k]>0).length;
   const focusScore=Math.min(100,Math.round((wActive/7)*40+(Math.min(wSess.length?wTotal/wSess.length:0,7200)/7200)*35+(Math.min(streak,14)/14)*25));
   el.innerHTML=`
     <div class="section-label">Personal Records</div>
@@ -1456,7 +1433,7 @@ async function renderSocial(){
     members.sort((a,b)=>b.weekSecs-a.weekSecs);
     const re=['🥇','🥈','🥉'],rc=['gold','silver','bronze'];
     const rows=members.map((m,i)=>{const isYou=m.uid===S.user?.uid;return`<div class="lb-row"><div class="lb-rank ${rc[i]||''}">${re[i]||i+1}</div><div class="lb-avatar">${m.photo?`<img src="${m.photo}" alt="">`:(m.name||'?')[0]}</div><div class="lb-info"><div class="lb-name">${m.name||'Student'}${isYou?`<span class="lb-you">You</span>`:''}</div><div class="lb-sub">${m.weekSecs?formatDur(m.weekSecs)+' this week':'No sessions yet'}</div></div><div class="lb-hours">${m.weekSecs?(m.weekSecs/3600).toFixed(1)+'h':''}</div></div>`;}).join('');
-    el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;"><div class="section-label" style="margin-bottom:0;">Weekly Leaderboard</div><div style="display:flex;gap:8px;"><button class="pill" onclick="copyInvite()">🔗 Invite</button><button class="pill danger" onclick="leaveGroup()">Leave</button></div></div><p style="font-size:11px;color:var(--text3);margin-bottom:16px;">Resets every Monday · Code: <strong>${S.groupId}</strong></p>${rows||`<div class="empty-state"><div class="empty-icon">👥</div>Just you so far!<br>Share your code to invite friends.</div>`}`;
+    el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;"><div class="section-label" style="margin-bottom:0;">Weekly Leaderboard</div><div style="display:flex;gap:8px;"><button class="pill" onclick="copyInvite()">🔗 Invite</button><button class="pill danger" onclick="leaveGroup()">Leave</button></div></div><p style="font-size:11px;color:var(--text3);margin-bottom:16px;">Resets every Monday · Code: <strong>${S.groupId}</strong></p>${rows||`<div class="empty-state"><div class="empty-icon">👥</div>Just you so far!</div>`}`;
   }catch(e){el.innerHTML=`<div class="empty-state">Error loading. Try again.</div>`;}
 }
 window.createGroup=async function(){const gid=generateGroupId();S.groupId=gid;localStorage.setItem('st_groupId',gid);if(S.user)await publishUserToGroup(S.user);renderSocial();};
@@ -1534,8 +1511,8 @@ window.closeModal=function(id){document.getElementById(id).classList.remove('ope
 // ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
   if(!S.user||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
-  if(e.code==='Space'){e.preventDefault();startStop();}
-  if(e.code==='KeyR'&&!S.running)resetTimer();
+  if(e.code==='Space'){e.preventDefault();S.sessionState==='running'?pauseSession():startSession();}
+  if(e.code==='KeyS'&&S.sessionState!=='idle')openSaveModal();
   if(e.code==='KeyF')S.fsOpen?exitFullscreen():enterFullscreen();
   if(e.code==='Escape'&&S.fsOpen)exitFullscreen();
 });
