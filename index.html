@@ -905,10 +905,11 @@ onAuthStateChanged(auth,user=>{
     S.user=user;
     document.getElementById('landingPage').classList.add('hidden');
     document.getElementById('mainApp').style.display='block';
-    updateProfile(user);loadSessions(user.uid);publishUserToGroup(user);
+    updateProfile(user);publishUserToGroup(user);
     applyTheme();renderCalendar();renderSubjectTags();renderGoals();
     updateTimerDisplay();updateSessionControls();renderCountdowns();startCdTick();
     setTimeout(flushPendingQueue,2000);
+    loadSessions(user.uid);
   }else{
     S.user=null;S.sessions=[];
     document.getElementById('mainApp').style.display='none';
@@ -930,6 +931,21 @@ function setSyncStatus(b){
   if(!d)return;d.className='sync-dot'+(b?' syncing':'');l.textContent=b?'Syncing...':'Synced';
 }
 function loadSessions(uid){
+  // Use get() for initial load — bypasses all SDK caching issues
+  get(ref(db,`users/${uid}/sessions`)).then(snap=>{
+    S.sessions=[];
+    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
+    S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
+    console.log('Sessions loaded via get():', S.sessions.length, S.sessions.map(s=>s.date+' '+s.duration+'s'));
+    renderCalendar();updateStats();renderGoals();
+    if(S.activeTab==='history')renderFullHistory();
+    if(S.activeTab==='recap')renderRecap();
+    if(S.activeTab==='records')renderRecords();
+  }).catch(e=>{
+    console.error('loadSessions error:', e);
+    showSaveToast('⚠ Could not load sessions: '+e.message, true);
+  });
+  // Also keep onValue for real-time updates after saves
   onValue(ref(db,`users/${uid}/sessions`),snap=>{
     S.sessions=[];
     if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
