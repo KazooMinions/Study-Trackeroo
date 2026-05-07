@@ -932,8 +932,17 @@ function setSyncStatus(b){
 function loadSessions(uid){
   onValue(ref(db,`users/${uid}/sessions`),snap=>{
     S.sessions=[];
-    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
+    console.log('[ST] onValue fired. exists=',snap.exists(),'numChildren=',snap.exists()?snap.numChildren():0);
+    if(snap.exists()){
+      snap.forEach(c=>{
+        const v=c.val();
+        console.log('[ST] session:',c.key,'date=',v.date,'dur=',v.duration,'ts=',v.ts);
+        S.sessions.push({id:c.key,...v});
+      });
+    }
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
+    console.log('[ST] S.sessions.length=',S.sessions.length);
+    window._ST=S;
     renderCalendar();updateStats();renderGoals();
     if(S.activeTab==='history')renderFullHistory();
     if(S.activeTab==='recap')renderRecap();
@@ -1588,7 +1597,92 @@ applyTheme();
 updateLofiUI();
 
 // ── DEBUG PANEL ──
-window.showDebug=function(){
+window.showDebug=async function(){
+  // Directly fetch from Firebase to bypass any caching
+  let rawSnap=null;
+  try{
+    rawSnap=await get(ref(db,`users/${S.user.uid}/sessions`));
+  }catch(e){}
+
+  const today=new Date();
+  const todayKey=dateKey(today);
+  const calMap=buildCalMap();
+
+  let html='<div style="font-family:monospace;font-size:12px;line-height:1.9;">';
+  html+=`<b>Today (local):</b> ${todayKey}<br>`;
+  html+=`<b>UTC:</b> ${today.toISOString().slice(0,10)}<br>`;
+  html+=`<b>Timezone:</b> UTC${today.getTimezoneOffset()<=0?'+':''}${-(today.getTimezoneOffset()/60)}<br>`;
+  html+=`<b>S.sessions count:</b> ${S.sessions.length}<br>`;
+  html+=`<b>Your UID:</b> ${S.user?.uid}<br>`;
+
+  // Direct Firebase read
+  let rawSessions=[];
+  if(rawSnap&&rawSnap.exists()){
+    rawSnap.forEach(c=>rawSessions.push({id:c.key,...c.val()}));
+  }
+  html+=`<b>Firebase direct read count:</b> ${rawSessions.length}<br>`;
+  if(rawSnap===null){
+    html+='<span style="color:#e24b4a">⚠ Firebase read THREW AN ERROR — permission denied or network issue</span><br>';
+  }
+  html+='<br>';
+
+  if(rawSessions.length!==S.sessions.length){
+    html+=`<span style="color:#e24b4a">⚠ MISMATCH: S.sessions=${S.sessions.length} but Firebase has ${rawSessions.length}</span><br><br>`;
+  }
+
+  html+='<b>All sessions (direct from Firebase):</b><br>';
+  if(!rawSessions.length){
+    html+='<span style="color:#e24b4a">⚠ NO SESSIONS FOUND in Firebase</span><br>';
+  } else {
+    rawSessions.forEach(s=>{
+      const lv=getLevel(s.duration);
+      const isToday=s.date===todayKey?' ← TODAY':'';
+      const color=lv===0?'#e24b4a':lv>=3?'#44a93a':'#f4b32e';
+      html+=`&nbsp;<span style="color:${color}">• ${s.date} | ${s.duration}s | lv${lv}${isToday}</span><br>`;
+    });
+  }
+
+  // Show the exact Firebase path being read
+  html+=`<b>Reading path:</b> users/${S.user?.uid}/sessions<br>`;
+  html+=`<b>Auth email:</b> ${S.user?.email}<br>`;
+  html+='<br><b>calMap:</b><br>';
+  const keys=Object.keys(calMap);
+  if(!keys.length){
+    html+='<span style="color:#e24b4a">⚠ calMap EMPTY</span><br>';
+  } else {
+    keys.forEach(k=>{
+      const lv=getLevel(calMap[k]);
+      const match=k===todayKey?' ← TODAY':'';
+      html+=`&nbsp;• ${k}: ${formatDur(calMap[k])} lv${lv}${match}<br>`;
+    });
+  }
+
+  // Check localStorage backup
+  const pending=JSON.parse(localStorage.getItem('st_pending')||'[]');
+  html+=`<br><b>localStorage backup queue:</b> ${pending.length} pending<br>`;
+  pending.forEach(s=>{
+    html+=`&nbsp;• ${s.date} | ${s.duration}s<br>`;
+  });
+
+  const cs=getComputedStyle(document.body);
+  html+='<br><b>Green vars:</b><br>';
+  ['--green1','--green2','--green3','--green4','--green5'].forEach(v=>{
+    const val=cs.getPropertyValue(v).trim();
+    html+=`&nbsp;${v}: <span style="display:inline-block;width:14px;height:11px;background:${val};border-radius:2px;vertical-align:middle;border:1px solid #444;"></span> ${val}<br>`;
+  });
+  html+=`<br><b>Theme:</b> ${S.theme}</div>`;
+
+  let panel=document.getElementById('debugPanel');
+  if(!panel){
+    panel=document.createElement('div');
+    panel.id='debugPanel';
+    panel.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    document.body.appendChild(panel);
+  }
+  panel.innerHTML=`<div style="background:var(--bg);color:var(--text);border-radius:14px;padding:24px;max-width:580px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:0 4px 32px rgba(0,0,0,.5);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><b style="font-size:15px;">🔍 Calendar Debug</b><button onclick="document.getElementById('debugPanel').remove()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3);">✕</button></div><div>${html}</div></div>`;
+};
+// OLD showDebug placeholder removed
+window._oldShowDebug=function(){
   const today=new Date();
   const todayKey=dateKey(today);
   const calMap=buildCalMap();
