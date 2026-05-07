@@ -541,6 +541,7 @@ textarea.modal-input{resize:vertical;min-height:80px;}
       </div>
       <div class="topbar-right">
         <button class="pill" onclick="toggleTheme()"><span id="toggleIcon">☾</span><span id="toggleLabel">Dark</span></button>
+        <button class="pill" onclick="showDebug()" style="font-size:11px;">🔍 Debug</button>
         <button class="pill danger" onclick="signOut()">Sign out</button>
       </div>
     </div>
@@ -1585,6 +1586,55 @@ window.hideTip=function(){document.getElementById('tooltip').style.display='none
 
 applyTheme();
 updateLofiUI();
+
+// ── DEBUG PANEL ──
+window.showDebug=function(){
+  const today=new Date();
+  const todayKey=dateKey(today);
+  const calMap=buildCalMap();
+  const sessions=S.sessions;
+  let html='<div style="font-family:monospace;font-size:12px;line-height:1.8;">';
+  html+=`<b>Today (local):</b> ${todayKey}<br>`;
+  html+=`<b>UTC date:</b> ${today.toISOString().slice(0,10)}<br>`;
+  html+=`<b>Timezone offset:</b> UTC${today.getTimezoneOffset()<=0?'+':''}${-(today.getTimezoneOffset()/60)}<br>`;
+  html+=`<b>Sessions loaded:</b> ${sessions.length}<br><br>`;
+  if(!sessions.length){
+    html+='<span style="color:#e24b4a">⚠ S.sessions is EMPTY — Firebase not loading data</span><br>';
+  }else{
+    html+='<b>Sessions in Firebase:</b><br>';
+    sessions.forEach(s=>{
+      const lv=getLevel(s.duration);
+      html+=`&nbsp;• ${s.date} | ${s.duration}s (${formatDur(s.duration)}) | level=${lv}<br>`;
+    });
+  }
+  html+='<br><b>calMap (date → total):</b><br>';
+  const keys=Object.keys(calMap);
+  if(!keys.length){
+    html+='<span style="color:#e24b4a">⚠ calMap is EMPTY</span><br>';
+  }else{
+    keys.forEach(k=>{
+      const lv=getLevel(calMap[k]);
+      const match=k===todayKey?' ← TODAY':'';
+      html+=`&nbsp;• ${k}: ${formatDur(calMap[k])} → lv${lv}${match}<br>`;
+    });
+  }
+  const cs=getComputedStyle(document.body);
+  html+='<br><b>Green CSS vars:</b><br>';
+  ['--green1','--green2','--green3','--green4','--green5'].forEach(v=>{
+    const val=cs.getPropertyValue(v).trim();
+    html+=`&nbsp;${v}: <span style="display:inline-block;width:16px;height:12px;background:${val};border-radius:2px;vertical-align:middle;"></span> ${val}<br>`;
+  });
+  html+=`<br><b>Theme:</b> ${S.theme}</div>`;
+  let panel=document.getElementById('debugPanel');
+  if(!panel){
+    panel=document.createElement('div');
+    panel.id='debugPanel';
+    panel.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    document.body.appendChild(panel);
+  }
+  panel.innerHTML=`<div style="background:var(--bg);color:var(--text);border-radius:14px;padding:24px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 32px rgba(0,0,0,.4);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><b style="font-size:15px;">🔍 Calendar Debug</b><button onclick="document.getElementById('debugPanel').remove()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text3);">✕</button></div><div>${html}</div></div>`;
+};
+
 </script>
 </body>
 </html>
