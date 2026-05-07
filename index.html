@@ -930,31 +930,23 @@ function setSyncStatus(b){
   const d=document.getElementById('syncDot'),l=document.getElementById('syncLabel');
   if(!d)return;d.className='sync-dot'+(b?' syncing':'');l.textContent=b?'Syncing...':'Synced';
 }
+function processSessions(snap){
+  S.sessions=[];
+  if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
+  S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
+  renderCalendar();updateStats();renderGoals();
+  if(S.activeTab==='history')renderFullHistory();
+  if(S.activeTab==='recap')renderRecap();
+  if(S.activeTab==='records')renderRecords();
+}
 function loadSessions(uid){
-  // Use get() for initial load — bypasses all SDK caching issues
-  get(ref(db,`users/${uid}/sessions`)).then(snap=>{
-    S.sessions=[];
-    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
-    S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-    console.log('Sessions loaded via get():', S.sessions.length, S.sessions.map(s=>s.date+' '+s.duration+'s'));
-    renderCalendar();updateStats();renderGoals();
-    if(S.activeTab==='history')renderFullHistory();
-    if(S.activeTab==='recap')renderRecap();
-    if(S.activeTab==='records')renderRecords();
-  }).catch(e=>{
-    console.error('loadSessions error:', e);
-    showSaveToast('⚠ Could not load sessions: '+e.message, true);
-  });
-  // Also keep onValue for real-time updates after saves
-  onValue(ref(db,`users/${uid}/sessions`),snap=>{
-    S.sessions=[];
-    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
-    S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-    renderCalendar();updateStats();renderGoals();
-    if(S.activeTab==='history')renderFullHistory();
-    if(S.activeTab==='recap')renderRecap();
-    if(S.activeTab==='records')renderRecords();
-  });
+  // get() only — no onValue which was overwriting with cached/partial data
+  get(ref(db,`users/${uid}/sessions`))
+    .then(snap=>processSessions(snap))
+    .catch(e=>console.error('loadSessions failed:',e));
+}
+function reloadSessions(){
+  if(S.user)loadSessions(S.user.uid);
 }
 // ── LOCAL BACKUP QUEUE ──
 // Every session is written to localStorage immediately before attempting Firebase.
@@ -1012,6 +1004,7 @@ async function saveSessionToDb(secs,notes=''){
     }
     setSyncStatus(false);
     showSaveToast('✓ Session saved');
+    reloadSessions();
   }catch(e){
     console.error('Firebase save failed:',e);
     // Show visible error — session is safe in localStorage
