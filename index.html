@@ -11,7 +11,7 @@
   --text:#1a1a1a;--text2:#555;--text3:#aaa;
   --border:#e0e0e0;--border2:#ccc;--cell-empty:#e8e8e8;
   --primary:#1a1a1a;--primary-text:#fff;
-  --green1:#c6efb3;--green2:#86c97b;--green3:#44a93a;--green4:#1e7a14;--green5:#0d5209;
+  --green1:#1a5c14;--green2:#257a1c;--green3:#33a827;--green4:#52cc3f;--green5:#6ee85a;
   --red:#e24b4a;--blue:#4285F4;--gold:#f4b32e;
   --fs-bg:rgba(255,255,255,0.98);--shadow:0 2px 16px rgba(0,0,0,.07);
 }
@@ -20,7 +20,7 @@
   --text:#f0f0f0;--text2:#999;--text3:#555;
   --border:#2a2a2a;--border2:#3a3a3a;--cell-empty:#222;
   --primary:#f0f0f0;--primary-text:#111;
-  --green1:#1a3d12;--green2:#2d6b24;--green3:#44a93a;--green4:#5ecc52;--green5:#86e07a;
+  --green1:#0d3d08;--green2:#1a6614;--green3:#33a827;--green4:#52cc3f;--green5:#86e07a;
   --fs-bg:rgba(17,17,17,0.98);--shadow:0 2px 16px rgba(0,0,0,.4);
 }
 html{scroll-behavior:smooth;}
@@ -600,7 +600,7 @@ textarea.modal-input{resize:vertical;min-height:80px;}
           <div class="legend-cell" style="background:var(--green4);"></div>
           <div class="legend-cell" style="background:var(--green5);"></div>
           <span class="legend-label">More</span>
-          <span style="font-size:10px;color:var(--text3);margin-left:6px;">30m · 1h · 2h · 4h · 6h+</span>
+          <span style="font-size:10px;color:var(--text3);margin-left:6px;">5m · 30m · 1h · 1.5h · 2h+</span>
         </div>
       </div>
 
@@ -822,10 +822,10 @@ const S = {
 
 // ── HELPERS ──
 const pad     = n => String(n).padStart(2,'0');
-const dateKey = d => d.toISOString().slice(0,10);
+const dateKey = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 function formatTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h>0?`${pad(h)}:${pad(m)}:${pad(sc)}`:`${pad(m)}:${pad(sc)}`;}
 function formatDur(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);if(h&&m)return`${h}h ${m}m`;if(h)return`${h}h`;return`${m}m`;}
-function getLevel(s){const h=s/3600;if(!s||h<0.5)return 0;if(h<1)return 1;if(h<2)return 2;if(h<4)return 3;if(h<6)return 4;return 5;}
+function getLevel(s){if(!s||s<300)return 0;if(s<1800)return 1;if(s<3600)return 2;if(s<5400)return 3;if(s<7200)return 4;return 5;}
 function getLevelColor(l){return RING_COLORS_HEX[l]||RING_COLORS_HEX[0];}
 function buildCalMap(){const m={};S.sessions.forEach(s=>{m[s.date]=(m[s.date]||0)+s.duration;});return m;}
 function getStreak(){
@@ -907,6 +907,7 @@ onAuthStateChanged(auth,user=>{
     updateProfile(user);loadSessions(user.uid);publishUserToGroup(user);
     applyTheme();renderCalendar();renderSubjectTags();renderGoals();
     updateTimerDisplay();updateSessionControls();renderCountdowns();startCdTick();
+    setTimeout(flushPendingQueue,2000);
   }else{
     S.user=null;S.sessions=[];
     document.getElementById('mainApp').style.display='none';
@@ -938,23 +939,84 @@ function loadSessions(uid){
     if(S.activeTab==='records')renderRecords();
   });
 }
+// ── LOCAL BACKUP QUEUE ──
+// Every session is written to localStorage immediately before attempting Firebase.
+// On next app load, any pending backup sessions are retried automatically.
+function localBackupSave(sessionObj){
+  try{
+    const queue=JSON.parse(localStorage.getItem('st_pending')||'[]');
+    queue.push(sessionObj);
+    localStorage.setItem('st_pending',JSON.stringify(queue));
+  }catch(e){}
+}
+function localBackupRemove(ts){
+  try{
+    const queue=JSON.parse(localStorage.getItem('st_pending')||'[]');
+    localStorage.setItem('st_pending',JSON.stringify(queue.filter(s=>s.ts!==ts)));
+  }catch(e){}
+}
+async function flushPendingQueue(){
+  if(!S.user)return;
+  try{
+    const queue=JSON.parse(localStorage.getItem('st_pending')||'[]');
+    if(!queue.length)return;
+    setSyncStatus(true);
+    for(const s of queue){
+      try{
+        await push(ref(db,`users/${S.user.uid}/sessions`),s);
+        localBackupRemove(s.ts);
+      }catch(e){console.warn('Retry failed for session',s.ts,e);}
+    }
+    setTimeout(()=>setSyncStatus(false),600);
+  }catch(e){}
+}
+
 async function saveSessionToDb(secs,notes=''){
   if(!S.user||secs<=0)return;
-  setSyncStatus(true);
   const task=document.getElementById('taskInput')?.value.trim()||'';
+  const sessionObj={
+    date:dateKey(new Date()),duration:secs,ts:Date.now(),
+    task,notes,subjectId:S.selectedSubj||null
+  };
+  // 1. Save to localStorage immediately — this is the safety net
+  localBackupSave(sessionObj);
+  setSyncStatus(true);
   try{
-    await push(ref(db,`users/${S.user.uid}/sessions`),{
-      date:dateKey(new Date()),duration:secs,ts:Date.now(),
-      task,notes,subjectId:S.selectedSubj||null
-    });
+    // 2. Push to Firebase
+    await push(ref(db,`users/${S.user.uid}/sessions`),sessionObj);
+    // 3. Remove from backup queue on success
+    localBackupRemove(sessionObj.ts);
+    // 4. Update leaderboard
     if(S.groupId){
       await set(ref(db,`groups/${S.groupId}/members/${S.user.uid}`),{
         name:S.user.displayName||'Student',photo:S.user.photoURL||'',
         weekSecs:weekStudied(0)+secs,updatedAt:Date.now()
       });
     }
-  }catch(e){console.error(e);}
-  setTimeout(()=>setSyncStatus(false),800);
+    setSyncStatus(false);
+    showSaveToast('✓ Session saved');
+  }catch(e){
+    console.error('Firebase save failed:',e);
+    // Show visible error — session is safe in localStorage
+    setSyncStatus(false);
+    showSaveToast('⚠ Saved locally — will sync when online',true);
+  }
+}
+
+function showSaveToast(msg,isWarn=false){
+  let t=document.getElementById('saveToast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='saveToast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:3000;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15);';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.background=isWarn?'#946800':'#1e7a14';
+  t.style.color='#fff';
+  t.style.opacity='1';
+  clearTimeout(t._timeout);
+  t._timeout=setTimeout(()=>{t.style.opacity='0';},3000);
 }
 window.deleteSession=async function(id){
   if(!S.user||!confirm('Delete this session?'))return;
@@ -1298,7 +1360,7 @@ window.openCountdownModal=function(){
   S.selectedCdEmoji='📅';
   document.getElementById('cdNameInput').value='';
   const tm=new Date(Date.now()+86400000);tm.setHours(9,0,0,0);
-  document.getElementById('cdDateInput').value=tm.toISOString().slice(0,16);
+  const tzOff=tm.getTimezoneOffset()*60000;document.getElementById('cdDateInput').value=new Date(tm-tzOff).toISOString().slice(0,16);
   renderEmojiPicker();document.getElementById('countdownModal').classList.add('open');
   setTimeout(()=>document.getElementById('cdNameInput').focus(),50);
 };
@@ -1449,7 +1511,7 @@ function renderFullHistory(){
   if(!sessions.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div>No sessions yet. Start studying!</div>`;return;}
   el.innerHTML=sessions.map(s=>{
     const lv=getLevel(s.duration),col=getLevelColor(lv),subj=getSubjectById(s.subjectId);
-    const labels=['—','Light','Good','Strong','Strong+','Max 🌿'];
+    const labels=['—','Starter 🌱','Getting warm','In the zone','Strong 💪','Max 🔥'];
     return`<div class="session-item"><div style="display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0;"><div style="width:10px;height:10px;border-radius:2px;flex-shrink:0;margin-top:2px;background:${subj?subj.color:col};"></div><div style="min-width:0;"><div class="session-info">${formatDur(s.duration)}</div>${subj?`<div class="session-task-label" style="color:${subj.color};font-style:normal;font-weight:600;">${subj.name}</div>`:''} ${s.task?`<div class="session-task-label">${s.task}</div>`:''} ${s.notes?`<div class="session-note-label">📝 ${s.notes}</div>`:''}<div class="session-date">${s.date}</div></div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><div style="font-size:12px;font-weight:700;color:${col};">${labels[lv]}</div><button class="session-delete" onclick="deleteSession('${s.id}')">✕</button></div></div>`;
   }).join('');
 }
@@ -1457,7 +1519,7 @@ function renderFullHistory(){
 // ── EXPORT ──
 window.exportCSV=function(){
   const rows=[['Date','Duration (min)','Subject','Notes','Task','Level']];
-  [...S.sessions].sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(s=>{const subj=getSubjectById(s.subjectId);const labels=['','Light','Good','Strong','Strong+','Max'];rows.push([s.date,Math.round(s.duration/60),subj?subj.name:'',s.notes||'',s.task||'',labels[getLevel(s.duration)]]);});
+  [...S.sessions].sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(s=>{const subj=getSubjectById(s.subjectId);const labels=['','Starter','Getting warm','In the zone','Strong','Max'];rows.push([s.date,Math.round(s.duration/60),subj?subj.name:'',s.notes||'',s.task||'',labels[getLevel(s.duration)]]);});
   const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`study-sessions-${dateKey(new Date())}.csv`;a.click();
 };
