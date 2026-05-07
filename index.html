@@ -932,17 +932,8 @@ function setSyncStatus(b){
 function loadSessions(uid){
   onValue(ref(db,`users/${uid}/sessions`),snap=>{
     S.sessions=[];
-    console.log('[ST] onValue fired. exists=',snap.exists(),'numChildren=',snap.exists()?snap.numChildren():0);
-    if(snap.exists()){
-      snap.forEach(c=>{
-        const v=c.val();
-        console.log('[ST] session:',c.key,'date=',v.date,'dur=',v.duration,'ts=',v.ts);
-        S.sessions.push({id:c.key,...v});
-      });
-    }
+    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-    console.log('[ST] S.sessions.length=',S.sessions.length);
-    window._ST=S;
     renderCalendar();updateStats();renderGoals();
     if(S.activeTab==='history')renderFullHistory();
     if(S.activeTab==='recap')renderRecap();
