@@ -996,12 +996,6 @@ window.switchMode=m=>{
   updateTUI();updateCtrl();
 };
 
-  renderPDots();updateCtrl();updateTUI();
-}
-
-  el.innerHTML=html;if(fs)fs.innerHTML=html;
-}
-
 function updateTUI(){
   const p=S.preset;
   const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
