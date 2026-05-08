@@ -656,6 +656,7 @@ const BTIPS=["Stand up and stretch.","Drink a full glass of water.","Look 20 fee
 const CS=2*Math.PI*58, CF=2*Math.PI*78;
 
 // ── STATE ──
+window._S=S; // debug
 const S={
   theme:localStorage.getItem('st_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),
   user:null, sessions:[],
@@ -756,11 +757,19 @@ onAuthStateChanged(auth,user=>{
 async function loadSessions(){
   if(!S.user)return;
   try{
+    console.log('[ST] calling get() for uid:', S.user.uid);
     const snap=await get(ref(db,`users/${S.user.uid}/sessions`));
+    console.log('[ST] snap.exists():', snap.exists());
     S.sessions=[];
-    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
+    if(snap.exists()){
+      snap.forEach(c=>{
+        console.log('[ST] session:', c.key, c.val().date, c.val().duration+'s');
+        S.sessions.push({id:c.key,...c.val()});
+      });
+    }
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-  }catch(e){console.error('loadSessions failed:',e);}
+    console.log('[ST] total loaded:', S.sessions.length);
+  }catch(e){console.error('[ST] loadSessions FAILED:', e.code, e.message);}
   renderAll();
 }
 
