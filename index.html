@@ -756,18 +756,10 @@ onAuthStateChanged(auth,user=>{
 async function loadSessions(){
   if(!S.user)return;
   try{
-    console.log('[ST] calling get() for uid:', S.user.uid);
     const snap=await get(ref(db,`users/${S.user.uid}/sessions`));
-    console.log('[ST] snap.exists():', snap.exists());
     S.sessions=[];
-    if(snap.exists()){
-      snap.forEach(c=>{
-        console.log('[ST] session:', c.key, c.val().date, c.val().duration+'s');
-        S.sessions.push({id:c.key,...c.val()});
-      });
-    }
+    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-    console.log('[ST] total loaded:', S.sessions.length);
   }catch(e){console.error('[ST] loadSessions FAILED:', e.code, e.message);}
   renderAll();
 }
@@ -1242,7 +1234,6 @@ document.addEventListener('keydown',e=>{
 window.showTT=(e,el)=>{const t=document.getElementById('tt');t.textContent=el.dataset.tip;t.style.display='block';t.style.left=(e.clientX+10)+'px';t.style.top=(e.clientY-26)+'px';};
 window.hideTT=()=>{document.getElementById('tt').style.display='none';};
 
-window._S=S;
 applyTheme();
 updateLofiUI();
 </script>
