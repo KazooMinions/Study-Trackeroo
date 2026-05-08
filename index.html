@@ -637,7 +637,6 @@ const auth=getAuth(fbApp);
 const db=getDatabase(fbApp);
 const prov=new GoogleAuthProvider();
 
-// ── CONSTANTS ──
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const SCOLS=['#ef5350','#ab47bc','#5c6bc0','#29b6f6','#26a69a','#66bb6a','#ffa726','#ec407a'];
@@ -647,40 +646,29 @@ const CDE=['📅','📝','🎓','🧪','📖','💡','🏃','✈️','🎯','⚡
 const LOFI=[{name:"Lo-fi Hip Hop",sub:"Chill beats",id:"jfKfPfyJRdk",e:"🎵"},{name:"Jazz Vibes",sub:"Smooth jazz",id:"HuFYqnbVbzY",e:"🎷"},{name:"Classical",sub:"Mozart & Bach",id:"4To2bA9-GTs",e:"🎻"},{name:"Nature",sub:"Rain & forest",id:"eKFTSSKCfnI",e:"🌿"}];
 const QUOTES=[["The secret of getting ahead is getting started.","Mark Twain"],["Deep work is the superpower of the 21st century.","Cal Newport"],["An investment in knowledge pays the best interest.","Benjamin Franklin"],["Discipline is the bridge between goals and accomplishment.","Jim Rohn"]];
 const BTIPS=["Stand up and stretch.","Drink a full glass of water.","Look 20 feet away for 20 seconds.","Take 5 slow deep breaths."];
-const CS=2*Math.PI*58, CF=2*Math.PI*78;
+const CS=2*Math.PI*58,CF=2*Math.PI*78;
 
-// ── STATE ──
 const S={
   theme:localStorage.getItem('st_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),
-  user:null, sessions:[],
-  // timer state
-  mode:'timer',         // 'timer' | 'stopwatch' | 'pomodoro'
-  state:'idle',         // 'idle' | 'running' | 'paused'
-  elapsed:0,            // seconds elapsed this session (simple integer counter)
-  preset:1500,
-  breakFired:false,
-  breakTimer:0, breakIntv:null,
-  interval:null,
-
+  user:null,sessions:[],
+  mode:'timer',state:'idle',elapsed:0,preset:1500,
+  breakFired:false,breakTimer:0,breakIntv:null,interval:null,
   subjs:JSON.parse(localStorage.getItem('st_subjs')||'[]'),
-  selSubj:null, newColor:SCOLS[0],
+  selSubj:null,newColor:SCOLS[0],
   goals:JSON.parse(localStorage.getItem('st_goals')||'{"daily":4,"weekly":20}'),
   editGoal:null,
-  lofiOn:false, lofiIdx:0,
-  sound:'off', audioCtx:null, sndNode:null,
+  lofiOn:false,lofiIdx:0,
+  sound:'off',audioCtx:null,sndNode:null,
   groupId:localStorage.getItem('st_groupId')||null,
   cds:JSON.parse(localStorage.getItem('st_cds')||'[]'),
-  selCdE:'📅', cdIntv:null,
-  tab:'home', recapOff:0, fsOpen:false,
+  selCdE:'📅',cdIntv:null,
+  tab:'home',recapOff:0,fsOpen:false,
 };
 
-// ── HELPERS ──
 const pad=n=>String(n).padStart(2,'0');
-// Always use local time — never toISOString
 const dk=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const ft=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h?`${pad(h)}:${pad(m)}:${pad(sc)}`:`${pad(m)}:${pad(sc)}`;};
 const fd=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);if(h&&m)return`${h}h ${m}m`;if(h)return`${h}h`;return`${m||'<1'}m`;};
-// Level: 0=none(<5m), 1=5-30m, 2=30m-1h, 3=1-1.5h, 4=1.5-2h, 5=2h+
 const lv=s=>!s||s<300?0:s<1800?1:s<3600?2:s<5400?3:s<7200?4:5;
 const bmap=()=>{const m={};S.sessions.forEach(s=>{m[s.date]=(m[s.date]||0)+s.duration;});return m;};
 const todayS=()=>{const k=dk(new Date());return S.sessions.filter(s=>s.date===k).reduce((a,s)=>a+s.duration,0);};
@@ -689,7 +677,6 @@ const wkStart=(off=0)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDa
 const streak=()=>{const m=bmap();let n=0;for(let i=0;i<365;i++){const d=new Date();d.setDate(d.getDate()-i);if((m[dk(d)]||0)>0)n++;else if(i>0)break;}return n;};
 const genId=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let id='';for(let i=0;i<6;i++)id+=c[Math.floor(Math.random()*c.length)];return id;};
 
-// ── THEME ──
 const applyTheme=()=>{
   document.body.dataset.theme=S.theme;
   const ico=S.theme==='dark'?'☀':'☾';
@@ -697,13 +684,9 @@ const applyTheme=()=>{
 };
 window.toggleTheme=()=>{S.theme=S.theme==='light'?'dark':'light';localStorage.setItem('st_theme',S.theme);applyTheme();};
 
-// ── TOAST ──
 const toast=(msg,warn=false)=>{const t=document.getElementById('toast');t.textContent=msg;t.style.background=warn?'#946800':'#1e7a14';t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3200);};
-
-// ── SYNC DOT ──
 const setSyncing=b=>{const d=document.getElementById('sdot'),l=document.getElementById('slbl');if(d)d.className='sdot'+(b?' busy':'');if(l)l.textContent=b?'Syncing…':'Synced';};
 
-// ── AUTH ──
 window.doSignIn=async()=>{
   document.getElementById('land').classList.add('hidden');
   document.getElementById('loading').classList.remove('hidden');
@@ -738,7 +721,7 @@ onAuthStateChanged(auth,user=>{
     applyTheme();renderSubjTags();updateTUI();updateCtrl();renderCDs();startCdTick();
     loadSessions();
     setTimeout(flushQ,3000);
-    // Restore any interrupted session from before refresh
+    // Restore interrupted session
     try{
       const live=JSON.parse(localStorage.getItem('st_live')||'null');
       if(live&&live.elapsed>0){
@@ -747,11 +730,10 @@ onAuthStateChanged(auth,user=>{
         S.preset=live.preset||1500;
         S.breakFired=live.breakFired||false;
         S.selSubj=live.subj||null;
-        S.state='paused'; // always restore as paused — user decides to resume
+        S.state='paused';
         if(live.task)setTimeout(()=>{const ti=document.getElementById('taskIn');if(ti)ti.value=live.task;},100);
         updateTUI();updateCtrl();renderSubjTags();
-        // Show a toast so user knows their session was recovered
-        toast('⚡ Session restored — '+fd(live.elapsed)+' saved. Resume or save it.',false);
+        toast('⚡ Session restored — '+fd(live.elapsed)+'. Resume or save it.');
       }
     }catch(_){}
   }else{
@@ -762,7 +744,6 @@ onAuthStateChanged(auth,user=>{
   }
 });
 
-// ── SESSIONS: get() only, no onValue, no SDK cache ──
 async function loadSessions(){
   if(!S.user)return;
   try{
@@ -770,12 +751,11 @@ async function loadSessions(){
     S.sessions=[];
     if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-  }catch(e){console.error('[ST] loadSessions FAILED:', e.code, e.message);}
+  }catch(e){console.error('loadSessions:',e);}
   renderAll();
 }
 
 function renderAll(){
-  console.log('renderAll: sessions=',S.sessions.length, S.sessions.map(s=>s.date+':'+s.duration));
   renderCal();renderGoals();updateStats();
   if(S.tab==='history')renderHist();
   if(S.tab==='recap')renderRecap();
@@ -786,20 +766,18 @@ async function saveSess(secs,notes){
   if(!S.user||secs<=0)return;
   const task=(document.getElementById('taskIn')?.value||'').trim();
   const obj={date:dk(new Date()),duration:secs,ts:Date.now(),task,notes:notes||'',subjectId:S.selSubj||null};
-  // Backup to localStorage first — safety net
   try{const q=JSON.parse(localStorage.getItem('st_q')||'[]');q.push(obj);localStorage.setItem('st_q',JSON.stringify(q));}catch(_){}
   setSyncing(true);
   try{
     await push(ref(db,`users/${S.user.uid}/sessions`),obj);
-    // Remove from backup on success
     try{const q=JSON.parse(localStorage.getItem('st_q')||'[]');localStorage.setItem('st_q',JSON.stringify(q.filter(s=>s.ts!==obj.ts)));}catch(_){}
     if(S.groupId){
       try{await set(ref(db,`groups/${S.groupId}/members/${S.user.uid}`),{name:S.user.displayName||'Student',photo:S.user.photoURL||'',weekSecs:weekS(0)+secs,updatedAt:Date.now()});}catch(_){}
     }
     toast('✓ Session saved');
-  }catch(e){toast('⚠ Saved locally — will sync when online',true);console.error('saveSess error:',e);}
+  }catch(e){toast('⚠ Saved locally — will sync when online',true);console.error(e);}
   setSyncing(false);
-  await loadSessions(); // always reload fresh after saving
+  await loadSessions();
 }
 
 window.deleteSession=async id=>{
@@ -826,7 +804,6 @@ async function flushQ(){
   }catch(_){}
 }
 
-// ── TABS ──
 window.showTab=tab=>{
   S.tab=tab;
   ['home','recap','records','social','history','tools'].forEach(t=>document.getElementById(`tab-${t}`).classList.toggle('hidden',t!==tab));
@@ -837,7 +814,6 @@ window.showTab=tab=>{
   if(tab==='history')renderHist();
 };
 
-// ── STATS ──
 function updateStats(){
   const tot=S.sessions.reduce((a,s)=>a+s.duration,0)/3600;
   document.getElementById('sth').textContent=tot.toFixed(1);
@@ -846,7 +822,6 @@ function updateStats(){
   const tod=todayS();document.getElementById('stt').textContent=tod?fd(tod):'0m';
 }
 
-// ── GOALS ──
 window.openGoalModal=type=>{
   S.editGoal=type;
   document.getElementById('goalTitle').textContent=type==='daily'?'Set daily goal':'Set weekly goal';
@@ -871,7 +846,6 @@ function renderGoals(){
     <div class="gcard"><div class="gring">${ring(wp,wc)}<div class="gpct">${Math.round(wp*100)}%</div></div><div class="ginfo"><div class="glbl">Weekly</div><div class="gval">${fd(ws)} <span style="font-size:10px;color:var(--text3);font-weight:400">/ ${S.goals.weekly}h</span></div><div class="gsub">${wp>=1?'🎯 Done!':fd(Math.max(0,wg-ws))+' to go'}</div></div><button class="gedit" onclick="openGoalModal('weekly')">✎</button></div>`;
 }
 
-// ── CALENDAR ──
 window.calScroll=dir=>{const el=document.getElementById('calEl');if(!el)return;const bw=(el.querySelector('.mblk')?.offsetWidth||100)+12;el.scrollBy({left:dir*bw*3,behavior:'smooth'});};
 function updateCRange(){
   const el=document.getElementById('calEl'),lb=document.getElementById('crangelbl');if(!el||!lb)return;
@@ -881,8 +855,7 @@ function updateCRange(){
 }
 function renderCal(){
   const el=document.getElementById('calEl');if(!el)return;
-  const map=bmap();
-  console.log('renderCal: map=',JSON.stringify(map), 'sessions=',S.sessions.length);,today=new Date(),tk=dk(today);
+  const map=bmap(),today=new Date(),tk=dk(today);
   let html='';
   for(let i=11;i>=0;i--){
     const d=new Date(today.getFullYear(),today.getMonth()-i,1);
@@ -901,7 +874,6 @@ function renderCal(){
   setTimeout(()=>{el.scrollLeft=el.scrollWidth;updateCRange();},30);
 }
 
-// ── SUBJECTS ──
 const saveSubjs=()=>localStorage.setItem('st_subjs',JSON.stringify(S.subjs));
 window.openSubjModal=()=>{S.newColor=SCOLS[S.subjs.length%SCOLS.length];document.getElementById('subjName').value='';renderSwatches();document.getElementById('subjModal').classList.add('on');setTimeout(()=>document.getElementById('subjName').focus(),50);};
 window.saveSubj=()=>{const name=document.getElementById('subjName').value.trim();if(!name)return;S.subjs.push({id:Date.now().toString(),name,color:S.newColor});saveSubjs();cm('subjModal');renderSubjTags();};
@@ -911,7 +883,6 @@ window.selSubject=id=>{S.selSubj=S.selSubj===id?null:id;renderSubjTags();};
 function renderSubjTags(){const el=document.getElementById('stagsEl');if(!el)return;let html=S.subjs.map(s=>`<button class="stag${S.selSubj===s.id?' on':''}" style="background:${s.color}22;color:${s.color}" onclick="selSubject('${s.id}')">${s.name}</button>`).join('');html+=`<button class="addstag" onclick="openSubjModal()">＋ Add</button>`;el.innerHTML=html;}
 
 // ── SESSION STATE MACHINE ──
-// Simple counting: interval fires every 1 second and increments S.elapsed by 1
 window.startSession=()=>{
   if(S.state==='running')return;
   if(S.state==='idle'){S.elapsed=0;S.breakFired=false;}
@@ -919,15 +890,14 @@ window.startSession=()=>{
   clearInterval(S.interval);
   S.interval=setInterval(()=>{
     S.elapsed++;
-    // Persist session state every second so refresh doesn't lose progress
+    // Save to localStorage every second for crash recovery
     try{localStorage.setItem('st_live',JSON.stringify({elapsed:S.elapsed,mode:S.mode,preset:S.preset,breakFired:S.breakFired,task:(document.getElementById('taskIn')?.value||''),subj:S.selSubj}));}catch(_){}
     // 90-min enforcer
     if(!S.breakFired&&S.elapsed>=5400){
       S.breakFired=true;pauseSession();startBreak(600);return;
     }
-    // auto-complete
-    const lim=S.preset;
-    if(S.mode==='timer'&&S.elapsed>=lim){
+    // Timer auto-complete
+    if(S.mode==='timer'&&S.elapsed>=S.preset){
       clearInterval(S.interval);
       const sec=S.elapsed;resetState();playDone();saveSess(sec,'');
       return;
@@ -990,15 +960,15 @@ window.setPreset=s=>{
 };
 
 window.switchMode=m=>{
-  if(S.state!=='idle')return;S.mode=m;S.elapsed=0;S.breakFired=false;
+  if(S.state!=='idle')return;
+  S.mode=m;S.elapsed=0;S.breakFired=false;
   ['timer','stopwatch'].forEach(x=>document.getElementById('m'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('on',x===m));
   document.getElementById('presetsEl').style.display=m==='timer'?'flex':'none';
   updateTUI();updateCtrl();
 };
 
 function updateTUI(){
-  const p=S.preset;
-  const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
+  const p=S.preset,e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   const num=document.getElementById('tnum'),lbl=document.getElementById('tlbl'),ring=document.getElementById('tring');
   if(num)num.textContent=ft(rem);
   const level=lv(e);
@@ -1008,7 +978,6 @@ function updateTUI(){
   const lt=document.getElementById('ltime');if(lt)lt.textContent=e>0?fd(e):'';
 }
 
-// ── BREAK ──
 function startBreak(secs){
   document.getElementById('bkicon').textContent='☕';
   document.getElementById('bktitle').textContent='90 min reached!';
@@ -1020,12 +989,8 @@ function startBreak(secs){
   S.breakIntv=setInterval(()=>{S.breakTimer--;document.getElementById('bktimer').textContent=ft(Math.max(0,S.breakTimer));if(S.breakTimer<=0)stopBreak();},1000);
 }
 function stopBreak(){clearInterval(S.breakIntv);document.getElementById('bkov').classList.remove('on');}
-window.skipBreak=()=>{
-  stopBreak();
-  updateCtrl();
-};
+window.skipBreak=()=>{stopBreak();updateCtrl();};
 
-// ── FULLSCREEN ──
 window.enterFS=()=>{
   S.fsOpen=true;document.getElementById('fsov').classList.add('on');
   const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];document.getElementById('fsquote').textContent=`"${q[0]}" — ${q[1]}`;
@@ -1036,8 +1001,7 @@ window.exitFS=()=>{S.fsOpen=false;document.getElementById('fsov').classList.remo
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&S.fsOpen)exitFS();});
 function updateFsUI(){
   const fst=document.getElementById('fstime'),fsb=document.getElementById('fssub'),fsr=document.getElementById('fsring'),fsl=document.getElementById('fslbl');if(!fst)return;
-  const p=S.preset;
-  const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
+  const p=S.preset,e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   fst.textContent=ft(rem);const level=lv(e);
   fst.style.color=level>=4?'var(--g4)':level>=3?'var(--g3)':level>=2?'var(--g2)':'var(--text)';
   if(fsb)fsb.textContent=S.state==='running'?(S.mode==='timer'?'focus time':'elapsed'):(S.state==='paused'?'paused':S.mode);
@@ -1046,7 +1010,6 @@ function updateFsUI(){
   if(fsl){let lb=subj?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${subj.color};margin-right:5px"></span>${subj.name}${task?' · ':''}`:'';fsl.innerHTML=lb+(task||'');}
 }
 
-// ── COUNTDOWNS ──
 const saveCDs=()=>localStorage.setItem('st_cds',JSON.stringify(S.cds));
 window.openCDModal=()=>{
   S.selCdE='📅';document.getElementById('cdName').value='';
@@ -1073,7 +1036,6 @@ function renderCDs(){
 function tickCDs(){S.cds.forEach(cd=>{const{d,h,m,s,done}=cdDiff(cd.ts),se=document.getElementById(`cds-${cd.id}`);if(!se){if(done)renderCDs();return;}se.textContent=pad(s);const me=document.getElementById(`cdm-${cd.id}`);if(me)me.textContent=pad(m);const he=document.getElementById(`cdh-${cd.id}`);if(he)he.textContent=pad(h);const de=document.getElementById(`cdd-${cd.id}`);if(de)de.textContent=pad(d);if(done)renderCDs();});}
 const startCdTick=()=>{clearInterval(S.cdIntv);S.cdIntv=setInterval(tickCDs,1000);};
 
-// ── RECAP ──
 window.recapShift=dir=>{S.recapOff+=dir;if(S.recapOff>0)S.recapOff=0;renderRecap();};
 function renderRecap(){
   const el=document.getElementById('recapEl');if(!el)return;
@@ -1105,7 +1067,6 @@ function renderRecap(){
     <button class="pill" onclick="copyRecap()">📋 Copy recap</button>`;
 }
 
-// ── RECORDS ──
 function renderRecords(){
   const el=document.getElementById('recordsEl');if(!el)return;
   if(!S.sessions.length){el.innerHTML=`<div class="empty"><div class="eicon">🏆</div>No sessions yet.</div>`;return;}
@@ -1126,7 +1087,6 @@ function renderRecords(){
     ${S.subjs.length?`<div class="slbl">All-time by subject</div>${S.subjs.map(subj=>{const ss=S.sessions.filter(s=>s.subjectId===subj.id).reduce((a,s)=>a+s.duration,0);if(!ss)return'';const pct=total>0?Math.round(ss/total*100):0;return`<div class="srow" style="margin-bottom:10px"><div class="sname" style="color:${subj.color};font-size:12px">${subj.name}</div><div class="sbar" style="height:7px"><div class="sfill" style="width:${pct}%;background:${subj.color}"></div></div><div class="sval">${fd(ss)}</div></div>`;}).join('')}`:''}`;
 }
 
-// ── SOCIAL ──
 async function renderSocial(){
   const el=document.getElementById('socialEl');if(!el)return;
   if(!S.groupId){
@@ -1149,7 +1109,6 @@ window.joinGroup=async()=>{const code=document.getElementById('joinCode').value.
 window.leaveGroup=()=>{if(!confirm('Leave this group?'))return;S.groupId=null;localStorage.removeItem('st_groupId');renderSocial();};
 window.copyInvite=()=>navigator.clipboard.writeText(`Join my StudyTrack group! Code: ${S.groupId}`).then(()=>toast('Invite copied!'));
 
-// ── HISTORY ──
 function renderHist(){
   const el=document.getElementById('histEl');if(!el)return;
   const sessions=[...S.sessions].reverse();
@@ -1161,7 +1120,6 @@ function renderHist(){
   }).join('');
 }
 
-// ── EXPORT ──
 window.exportCSV=()=>{
   const rows=[['Date','Duration (min)','Subject','Task','Notes']];
   [...S.sessions].sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(s=>{const subj=S.subjs.find(x=>x.id===s.subjectId);rows.push([s.date,Math.round(s.duration/60),subj?subj.name:'',s.task||'',s.notes||'']);});
@@ -1178,7 +1136,6 @@ window.copyRecap=()=>{
   navigator.clipboard.writeText(txt).then(()=>toast('Recap copied!'));
 };
 
-// ── LOFI ──
 window.toggleLofi=()=>S.lofiOn?stopLofi():playLofi();
 const playLofi=()=>{const st=LOFI[S.lofiIdx];document.getElementById('ytf').src=`https://www.youtube.com/embed/${st.id}?autoplay=1&loop=1&playlist=${st.id}&controls=0`;S.lofiOn=true;updateLofiUI();};
 const stopLofi=()=>{document.getElementById('ytf').src='';S.lofiOn=false;updateLofiUI();};
@@ -1186,7 +1143,6 @@ function updateLofiUI(){const st=LOFI[S.lofiIdx];document.getElementById('ltitle
 window.nextStation=()=>{S.lofiIdx=(S.lofiIdx+1)%LOFI.length;if(S.lofiOn){stopLofi();setTimeout(playLofi,200);}else updateLofiUI();};
 window.prevStation=()=>{S.lofiIdx=(S.lofiIdx-1+LOFI.length)%LOFI.length;if(S.lofiOn){stopLofi();setTimeout(playLofi,200);}else updateLofiUI();};
 
-// ── AMBIENT ──
 window.setSound=type=>{
   stopSnd();S.sound=type;document.querySelectorAll('.sndbtn').forEach(b=>b.classList.toggle('on',b.id===`snd-${type}`));
   if(type==='off')return;
@@ -1210,10 +1166,8 @@ const playDone=()=>{
   }catch(e){}
 };
 
-// ── MODALS ──
 window.cm=id=>document.getElementById(id).classList.remove('on');
 
-// ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
   if(!S.user||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
   if(e.code==='Space'){e.preventDefault();S.state==='running'?pauseSession():startSession();}
@@ -1222,7 +1176,6 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Escape'&&S.fsOpen)exitFS();
 });
 
-// ── TOOLTIP ──
 window.showTT=(e,el)=>{const t=document.getElementById('tt');t.textContent=el.dataset.tip;t.style.display='block';t.style.left=(e.clientX+10)+'px';t.style.top=(e.clientY-26)+'px';};
 window.hideTT=()=>{document.getElementById('tt').style.display='none';};
 
