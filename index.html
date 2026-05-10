@@ -174,7 +174,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 .presets{display:flex;gap:5px;justify-content:center;margin:10px 0;flex-wrap:wrap;}
 .preset{padding:5px 11px;border:1px solid var(--border2);border-radius:14px;font-size:12px;color:var(--text2);cursor:pointer;background:var(--bg);outline:none;font-family:inherit;}
 .preset.on{border-color:var(--text);color:var(--text);background:var(--bg2);}
-
+.pdots{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.pdot{width:8px;height:8px;border-radius:50%;background:var(--bg3);}
+.pdot.done{background:var(--g3);}
+.pdot.cur{background:var(--primary);}
 
 /* SESSION CONTROLS */
 .sctrl{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px;}
@@ -322,7 +325,7 @@ textarea.minput{resize:vertical;min-height:72px;}
   </nav>
   <div class="lhero">
     <h1>Study smarter.<br><span>Track every session.</span></h1>
-    <p>GitHub-style heatmap, smart timer, weekly recaps, countdowns, and leaderboards.</p>
+    <p>GitHub-style heatmap, Pomodoro timer, weekly recaps, countdowns, and leaderboards.</p>
     <button class="gbtn" onclick="doSignIn()">
       <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#fff" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#fff" opacity=".8" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#fff" opacity=".6" d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#fff" opacity=".7" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
       Continue with Google
@@ -331,6 +334,7 @@ textarea.minput{resize:vertical;min-height:72px;}
       <div class="feat"><div class="feat-icon">📅</div><div class="feat-title">Activity Calendar</div><div class="feat-desc">Every 5-min session shows up. Nothing lost.</div></div>
       <div class="feat"><div class="feat-icon">⏱</div><div class="feat-title">Smart Timer</div><div class="feat-desc">Start, pause, save. Your time is never lost.</div></div>
       <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">Weekly Recap</div><div class="feat-desc">Focus score and subject breakdown.</div></div>
+      <div class="feat"><div class="feat-icon">🍅</div><div class="feat-title">Pomodoro</div><div class="feat-desc">Auto work/break cycles.</div></div>
       <div class="feat"><div class="feat-icon">🏆</div><div class="feat-title">Leaderboard</div><div class="feat-desc">Compete with friends weekly.</div></div>
       <div class="feat"><div class="feat-icon">🎵</div><div class="feat-title">Lo-fi Radio</div><div class="feat-desc">Built-in study music stations.</div></div>
     </div>
@@ -435,6 +439,7 @@ textarea.minput{resize:vertical;min-height:72px;}
     <button class="fsb sv" id="fssave" onclick="openSaveModal()" style="display:none">💾</button>
     <button class="fsb" onclick="exitFS()" style="font-size:13px">⊠</button>
   </div>
+  <div style="display:flex;gap:6px;margin-top:14px" id="fspdots"></div>
   <div class="fsquote" id="fsquote"></div>
   <div class="fskeys">
     <span><span class="fsk">Space</span> start/pause</span>
@@ -518,7 +523,7 @@ textarea.minput{resize:vertical;min-height:72px;}
     <div class="mtog">
       <button class="mbtn on" id="mTimer" onclick="switchMode('timer')">Timer</button>
       <button class="mbtn" id="mStopwatch" onclick="switchMode('stopwatch')">Stopwatch</button>
-      
+      <button class="mbtn" id="mPomodoro" onclick="switchMode('pomodoro')">Pomodoro</button>
     </div>
 
     <input class="tinput" id="taskIn" type="text" placeholder="What are you studying? (optional)" maxlength="80">
@@ -565,6 +570,7 @@ textarea.minput{resize:vertical;min-height:72px;}
       <button class="preset" onclick="setPreset(7200)">2h</button>
     </div>
 
+    <div class="pdots hidden" id="pdots"></div>
 
     <div class="sctrl">
       <div class="livebar"><div class="ldot idle" id="ldot"></div><div class="ltxt" id="ltxt">Ready to start</div><div class="ltime" id="ltime"></div></div>
@@ -637,6 +643,7 @@ const auth=getAuth(fbApp);
 const db=getDatabase(fbApp);
 const prov=new GoogleAuthProvider();
 
+// ── CONSTANTS ──
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const SCOLS=['#ef5350','#ab47bc','#5c6bc0','#29b6f6','#26a69a','#66bb6a','#ffa726','#ec407a'];
@@ -646,29 +653,40 @@ const CDE=['📅','📝','🎓','🧪','📖','💡','🏃','✈️','🎯','⚡
 const LOFI=[{name:"Lo-fi Hip Hop",sub:"Chill beats",id:"jfKfPfyJRdk",e:"🎵"},{name:"Jazz Vibes",sub:"Smooth jazz",id:"HuFYqnbVbzY",e:"🎷"},{name:"Classical",sub:"Mozart & Bach",id:"4To2bA9-GTs",e:"🎻"},{name:"Nature",sub:"Rain & forest",id:"eKFTSSKCfnI",e:"🌿"}];
 const QUOTES=[["The secret of getting ahead is getting started.","Mark Twain"],["Deep work is the superpower of the 21st century.","Cal Newport"],["An investment in knowledge pays the best interest.","Benjamin Franklin"],["Discipline is the bridge between goals and accomplishment.","Jim Rohn"]];
 const BTIPS=["Stand up and stretch.","Drink a full glass of water.","Look 20 feet away for 20 seconds.","Take 5 slow deep breaths."];
-const CS=2*Math.PI*58,CF=2*Math.PI*78;
+const CS=2*Math.PI*58, CF=2*Math.PI*78;
 
+// ── STATE ──
 const S={
   theme:localStorage.getItem('st_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),
-  user:null,sessions:[],
-  mode:'timer',state:'idle',elapsed:0,preset:1500,
-  breakFired:false,breakTimer:0,breakIntv:null,interval:null,
+  user:null, sessions:[],
+  // timer state
+  mode:'timer',         // 'timer' | 'stopwatch' | 'pomodoro'
+  state:'idle',         // 'idle' | 'running' | 'paused'
+  elapsed:0,            // seconds elapsed this session (simple integer counter)
+  preset:1500,
+  breakFired:false,
+  breakTimer:0, breakIntv:null,
+  interval:null,
+  pomoWork:1500,pomoBreak:300,pomoRound:0,pomoTotal:4,pomoPhase:'work',
   subjs:JSON.parse(localStorage.getItem('st_subjs')||'[]'),
-  selSubj:null,newColor:SCOLS[0],
+  selSubj:null, newColor:SCOLS[0],
   goals:JSON.parse(localStorage.getItem('st_goals')||'{"daily":4,"weekly":20}'),
   editGoal:null,
-  lofiOn:false,lofiIdx:0,
-  sound:'off',audioCtx:null,sndNode:null,
+  lofiOn:false, lofiIdx:0,
+  sound:'off', audioCtx:null, sndNode:null,
   groupId:localStorage.getItem('st_groupId')||null,
   cds:JSON.parse(localStorage.getItem('st_cds')||'[]'),
-  selCdE:'📅',cdIntv:null,
-  tab:'home',recapOff:0,fsOpen:false,
+  selCdE:'📅', cdIntv:null,
+  tab:'home', recapOff:0, fsOpen:false,
 };
 
+// ── HELPERS ──
 const pad=n=>String(n).padStart(2,'0');
+// Always use local time — never toISOString
 const dk=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const ft=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h?`${pad(h)}:${pad(m)}:${pad(sc)}`:`${pad(m)}:${pad(sc)}`;};
 const fd=s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);if(h&&m)return`${h}h ${m}m`;if(h)return`${h}h`;return`${m||'<1'}m`;};
+// Level: 0=none(<5m), 1=5-30m, 2=30m-1h, 3=1-1.5h, 4=1.5-2h, 5=2h+
 const lv=s=>!s||s<300?0:s<1800?1:s<3600?2:s<5400?3:s<7200?4:5;
 const bmap=()=>{const m={};S.sessions.forEach(s=>{m[s.date]=(m[s.date]||0)+s.duration;});return m;};
 const todayS=()=>{const k=dk(new Date());return S.sessions.filter(s=>s.date===k).reduce((a,s)=>a+s.duration,0);};
@@ -677,6 +695,7 @@ const wkStart=(off=0)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDa
 const streak=()=>{const m=bmap();let n=0;for(let i=0;i<365;i++){const d=new Date();d.setDate(d.getDate()-i);if((m[dk(d)]||0)>0)n++;else if(i>0)break;}return n;};
 const genId=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let id='';for(let i=0;i<6;i++)id+=c[Math.floor(Math.random()*c.length)];return id;};
 
+// ── THEME ──
 const applyTheme=()=>{
   document.body.dataset.theme=S.theme;
   const ico=S.theme==='dark'?'☀':'☾';
@@ -684,9 +703,13 @@ const applyTheme=()=>{
 };
 window.toggleTheme=()=>{S.theme=S.theme==='light'?'dark':'light';localStorage.setItem('st_theme',S.theme);applyTheme();};
 
+// ── TOAST ──
 const toast=(msg,warn=false)=>{const t=document.getElementById('toast');t.textContent=msg;t.style.background=warn?'#946800':'#1e7a14';t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3200);};
+
+// ── SYNC DOT ──
 const setSyncing=b=>{const d=document.getElementById('sdot'),l=document.getElementById('slbl');if(d)d.className='sdot'+(b?' busy':'');if(l)l.textContent=b?'Syncing…':'Synced';};
 
+// ── AUTH ──
 window.doSignIn=async()=>{
   document.getElementById('land').classList.add('hidden');
   document.getElementById('loading').classList.remove('hidden');
@@ -701,7 +724,7 @@ window.doSignIn=async()=>{
   }
 };
 window.doSignOut=async()=>{
-  clearInterval(S.interval);S.state='idle';S.elapsed=0;S.accumulated=0;S.startTime=0;
+  clearInterval(S.interval);S.state='idle';S.elapsed=0;
   stopSnd();stopLofi();clearInterval(S.cdIntv);
   await fbOut(auth);
 };
@@ -721,21 +744,6 @@ onAuthStateChanged(auth,user=>{
     applyTheme();renderSubjTags();updateTUI();updateCtrl();renderCDs();startCdTick();
     loadSessions();
     setTimeout(flushQ,3000);
-    // Restore interrupted session
-    try{
-      const live=JSON.parse(localStorage.getItem('st_live')||'null');
-      if(live&&live.elapsed>0){
-        S.elapsed=live.elapsed;
-        S.mode=live.mode||'timer';
-        S.preset=live.preset||1500;
-        S.breakFired=live.breakFired||false;
-        S.selSubj=live.subj||null;
-        S.state='paused';
-        if(live.task)setTimeout(()=>{const ti=document.getElementById('taskIn');if(ti)ti.value=live.task;},100);
-        updateTUI();updateCtrl();renderSubjTags();
-        toast('⚡ Session restored — '+fd(live.elapsed)+'. Resume or save it.');
-      }
-    }catch(_){}
   }else{
     S.user=null;S.sessions=[];
     document.getElementById('app').style.display='none';
@@ -744,14 +752,23 @@ onAuthStateChanged(auth,user=>{
   }
 });
 
+// ── SESSIONS: get() only, no onValue, no SDK cache ──
 async function loadSessions(){
   if(!S.user)return;
   try{
+    console.log('[ST] calling get() for uid:', S.user.uid);
     const snap=await get(ref(db,`users/${S.user.uid}/sessions`));
+    console.log('[ST] snap.exists():', snap.exists());
     S.sessions=[];
-    if(snap.exists())snap.forEach(c=>S.sessions.push({id:c.key,...c.val()}));
+    if(snap.exists()){
+      snap.forEach(c=>{
+        console.log('[ST] session:', c.key, c.val().date, c.val().duration+'s');
+        S.sessions.push({id:c.key,...c.val()});
+      });
+    }
     S.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
-  }catch(e){console.error('loadSessions:',e);}
+    console.log('[ST] total loaded:', S.sessions.length);
+  }catch(e){console.error('[ST] loadSessions FAILED:', e.code, e.message);}
   renderAll();
 }
 
@@ -766,18 +783,20 @@ async function saveSess(secs,notes){
   if(!S.user||secs<=0)return;
   const task=(document.getElementById('taskIn')?.value||'').trim();
   const obj={date:dk(new Date()),duration:secs,ts:Date.now(),task,notes:notes||'',subjectId:S.selSubj||null};
+  // Backup to localStorage first — safety net
   try{const q=JSON.parse(localStorage.getItem('st_q')||'[]');q.push(obj);localStorage.setItem('st_q',JSON.stringify(q));}catch(_){}
   setSyncing(true);
   try{
     await push(ref(db,`users/${S.user.uid}/sessions`),obj);
+    // Remove from backup on success
     try{const q=JSON.parse(localStorage.getItem('st_q')||'[]');localStorage.setItem('st_q',JSON.stringify(q.filter(s=>s.ts!==obj.ts)));}catch(_){}
     if(S.groupId){
       try{await set(ref(db,`groups/${S.groupId}/members/${S.user.uid}`),{name:S.user.displayName||'Student',photo:S.user.photoURL||'',weekSecs:weekS(0)+secs,updatedAt:Date.now()});}catch(_){}
     }
     toast('✓ Session saved');
-  }catch(e){toast('⚠ Saved locally — will sync when online',true);console.error(e);}
+  }catch(e){toast('⚠ Saved locally — will sync when online',true);console.error('saveSess error:',e);}
   setSyncing(false);
-  await loadSessions();
+  await loadSessions(); // always reload fresh after saving
 }
 
 window.deleteSession=async id=>{
@@ -804,6 +823,7 @@ async function flushQ(){
   }catch(_){}
 }
 
+// ── TABS ──
 window.showTab=tab=>{
   S.tab=tab;
   ['home','recap','records','social','history','tools'].forEach(t=>document.getElementById(`tab-${t}`).classList.toggle('hidden',t!==tab));
@@ -814,6 +834,7 @@ window.showTab=tab=>{
   if(tab==='history')renderHist();
 };
 
+// ── STATS ──
 function updateStats(){
   const tot=S.sessions.reduce((a,s)=>a+s.duration,0)/3600;
   document.getElementById('sth').textContent=tot.toFixed(1);
@@ -822,6 +843,7 @@ function updateStats(){
   const tod=todayS();document.getElementById('stt').textContent=tod?fd(tod):'0m';
 }
 
+// ── GOALS ──
 window.openGoalModal=type=>{
   S.editGoal=type;
   document.getElementById('goalTitle').textContent=type==='daily'?'Set daily goal':'Set weekly goal';
@@ -846,6 +868,7 @@ function renderGoals(){
     <div class="gcard"><div class="gring">${ring(wp,wc)}<div class="gpct">${Math.round(wp*100)}%</div></div><div class="ginfo"><div class="glbl">Weekly</div><div class="gval">${fd(ws)} <span style="font-size:10px;color:var(--text3);font-weight:400">/ ${S.goals.weekly}h</span></div><div class="gsub">${wp>=1?'🎯 Done!':fd(Math.max(0,wg-ws))+' to go'}</div></div><button class="gedit" onclick="openGoalModal('weekly')">✎</button></div>`;
 }
 
+// ── CALENDAR ──
 window.calScroll=dir=>{const el=document.getElementById('calEl');if(!el)return;const bw=(el.querySelector('.mblk')?.offsetWidth||100)+12;el.scrollBy({left:dir*bw*3,behavior:'smooth'});};
 function updateCRange(){
   const el=document.getElementById('calEl'),lb=document.getElementById('crangelbl');if(!el||!lb)return;
@@ -874,6 +897,7 @@ function renderCal(){
   setTimeout(()=>{el.scrollLeft=el.scrollWidth;updateCRange();},30);
 }
 
+// ── SUBJECTS ──
 const saveSubjs=()=>localStorage.setItem('st_subjs',JSON.stringify(S.subjs));
 window.openSubjModal=()=>{S.newColor=SCOLS[S.subjs.length%SCOLS.length];document.getElementById('subjName').value='';renderSwatches();document.getElementById('subjModal').classList.add('on');setTimeout(()=>document.getElementById('subjName').focus(),50);};
 window.saveSubj=()=>{const name=document.getElementById('subjName').value.trim();if(!name)return;S.subjs.push({id:Date.now().toString(),name,color:S.newColor});saveSubjs();cm('subjModal');renderSubjTags();};
@@ -883,26 +907,26 @@ window.selSubject=id=>{S.selSubj=S.selSubj===id?null:id;renderSubjTags();};
 function renderSubjTags(){const el=document.getElementById('stagsEl');if(!el)return;let html=S.subjs.map(s=>`<button class="stag${S.selSubj===s.id?' on':''}" style="background:${s.color}22;color:${s.color}" onclick="selSubject('${s.id}')">${s.name}</button>`).join('');html+=`<button class="addstag" onclick="openSubjModal()">＋ Add</button>`;el.innerHTML=html;}
 
 // ── SESSION STATE MACHINE ──
+// Simple counting: interval fires every 1 second and increments S.elapsed by 1
 window.startSession=()=>{
   if(S.state==='running')return;
-  if(S.state==='idle'){S.elapsed=0;S.accumulated=0;S.breakFired=false;}
-  // Anchor to wall-clock time so background tab throttling can't slow the timer
-  S.startTime=Date.now();
+  if(S.mode==='pomodoro'&&S.pomoPhase==='break')return skipBreak();
+  if(S.state==='idle'){S.elapsed=0;S.breakFired=false;}
   S.state='running';
   clearInterval(S.interval);
   S.interval=setInterval(()=>{
-    // Compute elapsed from real timestamps, not by incrementing
-    S.elapsed=S.accumulated+Math.floor((Date.now()-S.startTime)/1000);
-    // Save to localStorage every second for crash recovery
-    try{localStorage.setItem('st_live',JSON.stringify({elapsed:S.elapsed,mode:S.mode,preset:S.preset,breakFired:S.breakFired,task:(document.getElementById('taskIn')?.value||''),subj:S.selSubj}));}catch(_){}
+    S.startTime = Date.now();              // mark the moment Start is pressed
+    S.elapsed = S.accumulated + Math.floor((Date.now() - S.startTime) / 1000);
     // 90-min enforcer
-    if(!S.breakFired&&S.elapsed>=5400){
-      S.breakFired=true;pauseSession();startBreak(600);return;
+    if(S.mode!=='pomodoro'&&!S.breakFired&&S.elapsed>=5400){
+      S.breakFired=true;pauseSession();startBreak(600,false);return;
     }
-    // Timer auto-complete
-    if(S.mode==='timer'&&S.elapsed>=S.preset){
+    // auto-complete
+    const lim=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=lim){
       clearInterval(S.interval);
-      const sec=S.elapsed;resetState();playDone();saveSess(sec,'');
+      if(S.mode==='pomodoro'){handlePomoEnd();}
+      else{const sec=S.elapsed;resetState();playDone();saveSess(sec,'');}
       return;
     }
     updateTUI();updateFsUI();
@@ -913,9 +937,6 @@ window.startSession=()=>{
 window.pauseSession=()=>{
   if(S.state!=='running')return;
   clearInterval(S.interval);
-  // Bank time from this run segment so resume continues correctly
-  S.accumulated=S.accumulated+Math.floor((Date.now()-S.startTime)/1000);
-  S.elapsed=S.accumulated;
   S.state='paused';
   updateTUI();updateCtrl();updateFsUI();
 };
@@ -939,8 +960,8 @@ window.confirmSave=()=>{
 window.discardSession=()=>{cm('saveModal');resetState();};
 
 function resetState(){
-  clearInterval(S.interval);S.state='idle';S.elapsed=0;S.accumulated=0;S.startTime=0;S.breakFired=false;
-  try{localStorage.removeItem('st_live');}catch(_){}
+  clearInterval(S.interval);S.state='idle';S.elapsed=0;S.breakFired=false;
+  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';renderPDots();}
   updateTUI();updateCtrl();updateFsUI();
 }
 
@@ -966,28 +987,48 @@ window.setPreset=s=>{
 };
 
 window.switchMode=m=>{
-  if(S.state!=='idle')return;
-  S.mode=m;S.elapsed=0;S.accumulated=0;S.startTime=0;S.breakFired=false;
-  ['timer','stopwatch'].forEach(x=>document.getElementById('m'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('on',x===m));
+  if(S.state!=='idle')return;S.mode=m;S.elapsed=0;S.pomoRound=0;S.pomoPhase='work';S.breakFired=false;
+  ['timer','stopwatch','pomodoro'].forEach(x=>document.getElementById('m'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('on',x===m));
   document.getElementById('presetsEl').style.display=m==='timer'?'flex':'none';
-  updateTUI();updateCtrl();
+  document.getElementById('pdots').classList.toggle('hidden',m!=='pomodoro');
+  updateTUI();updateCtrl();renderPDots();
 };
 
+function handlePomoEnd(){
+  if(S.pomoPhase==='work'){
+    const sec=S.elapsed;saveSess(sec,'');playDone();
+    S.pomoRound++;S.pomoPhase='break';S.elapsed=0;S.state='idle';
+    startBreak(S.pomoBreak,true);
+  }else{
+    S.pomoPhase='work';S.elapsed=0;S.state='idle';stopBreak();
+    if(S.pomoRound>=S.pomoTotal)S.pomoRound=0;
+  }
+  renderPDots();updateCtrl();updateTUI();
+}
+
+function renderPDots(){
+  const el=document.getElementById('pdots'),fs=document.getElementById('fspdots');if(!el)return;
+  let html='';for(let i=0;i<S.pomoTotal;i++){const cls=i<S.pomoRound?'pdot done':i===S.pomoRound&&S.pomoPhase==='work'?'pdot cur':'pdot';html+=`<div class="${cls}"></div>`;}
+  el.innerHTML=html;if(fs)fs.innerHTML=html;
+}
+
 function updateTUI(){
-  const p=S.preset,e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
+  const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+  const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   const num=document.getElementById('tnum'),lbl=document.getElementById('tlbl'),ring=document.getElementById('tring');
   if(num)num.textContent=ft(rem);
   const level=lv(e);
   if(ring){ring.style.stroke=GC[Math.min(level,5)];ring.style.strokeDashoffset=S.mode==='stopwatch'?0:CS*(1-Math.min(e/Math.max(p,1),1));}
-  const ml=S.mode==='timer'?'timer':'stopwatch';
+  const ml=S.mode==='pomodoro'?(S.pomoPhase==='work'?'focus':'break'):(S.mode==='timer'?'timer':'stopwatch');
   if(lbl)lbl.textContent=S.state==='running'?ml:S.state==='paused'?'paused':ml;
   const lt=document.getElementById('ltime');if(lt)lt.textContent=e>0?fd(e):'';
 }
 
-function startBreak(secs){
-  document.getElementById('bkicon').textContent='☕';
-  document.getElementById('bktitle').textContent='90 min reached!';
-  document.getElementById('bksub').textContent='Step away for 10 minutes.';
+// ── BREAK ──
+function startBreak(secs,isPomo){
+  document.getElementById('bkicon').textContent=isPomo?'🍅':'☕';
+  document.getElementById('bktitle').textContent=isPomo?'Pomodoro break!':'90 min reached!';
+  document.getElementById('bksub').textContent=isPomo?`Round ${S.pomoRound} done! ${Math.round(secs/60)} min break.`:'Step away for 10 minutes.';
   document.getElementById('bktip').textContent=BTIPS[Math.floor(Math.random()*BTIPS.length)];
   S.breakTimer=secs;document.getElementById('bktimer').textContent=ft(secs);
   document.getElementById('bkov').classList.add('on');
@@ -995,27 +1036,34 @@ function startBreak(secs){
   S.breakIntv=setInterval(()=>{S.breakTimer--;document.getElementById('bktimer').textContent=ft(Math.max(0,S.breakTimer));if(S.breakTimer<=0)stopBreak();},1000);
 }
 function stopBreak(){clearInterval(S.breakIntv);document.getElementById('bkov').classList.remove('on');}
-window.skipBreak=()=>{stopBreak();updateCtrl();};
+window.skipBreak=()=>{
+  stopBreak();
+  if(S.mode==='pomodoro'&&S.pomoPhase==='break'){S.pomoPhase='work';S.elapsed=0;S.state='idle';renderPDots();updateCtrl();updateTUI();}
+  else updateCtrl();
+};
 
+// ── FULLSCREEN ──
 window.enterFS=()=>{
   S.fsOpen=true;document.getElementById('fsov').classList.add('on');
   const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];document.getElementById('fsquote').textContent=`"${q[0]}" — ${q[1]}`;
-  updateFsUI();updateCtrl();
+  updateFsUI();renderPDots();updateCtrl();
   document.documentElement.requestFullscreen?.().catch(()=>{});
 };
 window.exitFS=()=>{S.fsOpen=false;document.getElementById('fsov').classList.remove('on');document.exitFullscreen?.().catch(()=>{});};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&S.fsOpen)exitFS();});
 function updateFsUI(){
   const fst=document.getElementById('fstime'),fsb=document.getElementById('fssub'),fsr=document.getElementById('fsring'),fsl=document.getElementById('fslbl');if(!fst)return;
-  const p=S.preset,e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
+  const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
+  const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   fst.textContent=ft(rem);const level=lv(e);
   fst.style.color=level>=4?'var(--g4)':level>=3?'var(--g3)':level>=2?'var(--g2)':'var(--text)';
-  if(fsb)fsb.textContent=S.state==='running'?(S.mode==='timer'?'focus time':'elapsed'):(S.state==='paused'?'paused':S.mode);
+  if(fsb)fsb.textContent=S.state==='running'?(S.mode==='timer'?'focus time':S.mode==='pomodoro'?'focus round':'elapsed'):(S.state==='paused'?'paused':S.mode);
   if(fsr){fsr.style.stroke=GC[Math.min(level,5)];fsr.style.strokeDashoffset=S.mode==='stopwatch'?0:CF*(1-Math.min(e/Math.max(p,1),1));}
   const task=(document.getElementById('taskIn')?.value||'').trim(),subj=S.subjs.find(s=>s.id===S.selSubj);
   if(fsl){let lb=subj?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${subj.color};margin-right:5px"></span>${subj.name}${task?' · ':''}`:'';fsl.innerHTML=lb+(task||'');}
 }
 
+// ── COUNTDOWNS ──
 const saveCDs=()=>localStorage.setItem('st_cds',JSON.stringify(S.cds));
 window.openCDModal=()=>{
   S.selCdE='📅';document.getElementById('cdName').value='';
@@ -1042,6 +1090,7 @@ function renderCDs(){
 function tickCDs(){S.cds.forEach(cd=>{const{d,h,m,s,done}=cdDiff(cd.ts),se=document.getElementById(`cds-${cd.id}`);if(!se){if(done)renderCDs();return;}se.textContent=pad(s);const me=document.getElementById(`cdm-${cd.id}`);if(me)me.textContent=pad(m);const he=document.getElementById(`cdh-${cd.id}`);if(he)he.textContent=pad(h);const de=document.getElementById(`cdd-${cd.id}`);if(de)de.textContent=pad(d);if(done)renderCDs();});}
 const startCdTick=()=>{clearInterval(S.cdIntv);S.cdIntv=setInterval(tickCDs,1000);};
 
+// ── RECAP ──
 window.recapShift=dir=>{S.recapOff+=dir;if(S.recapOff>0)S.recapOff=0;renderRecap();};
 function renderRecap(){
   const el=document.getElementById('recapEl');if(!el)return;
@@ -1073,6 +1122,7 @@ function renderRecap(){
     <button class="pill" onclick="copyRecap()">📋 Copy recap</button>`;
 }
 
+// ── RECORDS ──
 function renderRecords(){
   const el=document.getElementById('recordsEl');if(!el)return;
   if(!S.sessions.length){el.innerHTML=`<div class="empty"><div class="eicon">🏆</div>No sessions yet.</div>`;return;}
@@ -1093,6 +1143,7 @@ function renderRecords(){
     ${S.subjs.length?`<div class="slbl">All-time by subject</div>${S.subjs.map(subj=>{const ss=S.sessions.filter(s=>s.subjectId===subj.id).reduce((a,s)=>a+s.duration,0);if(!ss)return'';const pct=total>0?Math.round(ss/total*100):0;return`<div class="srow" style="margin-bottom:10px"><div class="sname" style="color:${subj.color};font-size:12px">${subj.name}</div><div class="sbar" style="height:7px"><div class="sfill" style="width:${pct}%;background:${subj.color}"></div></div><div class="sval">${fd(ss)}</div></div>`;}).join('')}`:''}`;
 }
 
+// ── SOCIAL ──
 async function renderSocial(){
   const el=document.getElementById('socialEl');if(!el)return;
   if(!S.groupId){
@@ -1115,6 +1166,7 @@ window.joinGroup=async()=>{const code=document.getElementById('joinCode').value.
 window.leaveGroup=()=>{if(!confirm('Leave this group?'))return;S.groupId=null;localStorage.removeItem('st_groupId');renderSocial();};
 window.copyInvite=()=>navigator.clipboard.writeText(`Join my StudyTrack group! Code: ${S.groupId}`).then(()=>toast('Invite copied!'));
 
+// ── HISTORY ──
 function renderHist(){
   const el=document.getElementById('histEl');if(!el)return;
   const sessions=[...S.sessions].reverse();
@@ -1126,6 +1178,7 @@ function renderHist(){
   }).join('');
 }
 
+// ── EXPORT ──
 window.exportCSV=()=>{
   const rows=[['Date','Duration (min)','Subject','Task','Notes']];
   [...S.sessions].sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(s=>{const subj=S.subjs.find(x=>x.id===s.subjectId);rows.push([s.date,Math.round(s.duration/60),subj?subj.name:'',s.task||'',s.notes||'']);});
@@ -1142,6 +1195,7 @@ window.copyRecap=()=>{
   navigator.clipboard.writeText(txt).then(()=>toast('Recap copied!'));
 };
 
+// ── LOFI ──
 window.toggleLofi=()=>S.lofiOn?stopLofi():playLofi();
 const playLofi=()=>{const st=LOFI[S.lofiIdx];document.getElementById('ytf').src=`https://www.youtube.com/embed/${st.id}?autoplay=1&loop=1&playlist=${st.id}&controls=0`;S.lofiOn=true;updateLofiUI();};
 const stopLofi=()=>{document.getElementById('ytf').src='';S.lofiOn=false;updateLofiUI();};
@@ -1149,6 +1203,7 @@ function updateLofiUI(){const st=LOFI[S.lofiIdx];document.getElementById('ltitle
 window.nextStation=()=>{S.lofiIdx=(S.lofiIdx+1)%LOFI.length;if(S.lofiOn){stopLofi();setTimeout(playLofi,200);}else updateLofiUI();};
 window.prevStation=()=>{S.lofiIdx=(S.lofiIdx-1+LOFI.length)%LOFI.length;if(S.lofiOn){stopLofi();setTimeout(playLofi,200);}else updateLofiUI();};
 
+// ── AMBIENT ──
 window.setSound=type=>{
   stopSnd();S.sound=type;document.querySelectorAll('.sndbtn').forEach(b=>b.classList.toggle('on',b.id===`snd-${type}`));
   if(type==='off')return;
@@ -1172,8 +1227,10 @@ const playDone=()=>{
   }catch(e){}
 };
 
+// ── MODALS ──
 window.cm=id=>document.getElementById(id).classList.remove('on');
 
+// ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
   if(!S.user||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
   if(e.code==='Space'){e.preventDefault();S.state==='running'?pauseSession():startSession();}
@@ -1182,9 +1239,11 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Escape'&&S.fsOpen)exitFS();
 });
 
+// ── TOOLTIP ──
 window.showTT=(e,el)=>{const t=document.getElementById('tt');t.textContent=el.dataset.tip;t.style.display='block';t.style.left=(e.clientX+10)+'px';t.style.top=(e.clientY-26)+'px';};
 window.hideTT=()=>{document.getElementById('tt').style.display='none';};
 
+window._S=S;
 applyTheme();
 updateLofiUI();
 </script>
