@@ -662,7 +662,9 @@ const S={
   // timer state
   mode:'timer',         // 'timer' | 'stopwatch' | 'pomodoro'
   state:'idle',         // 'idle' | 'running' | 'paused'
-  elapsed:0,            // seconds elapsed this session (simple integer counter)
+  elapsed:0,
+  elapsedBase:0,
+  runStartedAt:null,
   preset:1500,
   breakFired:false,
   breakTimer:0, breakIntv:null,
@@ -907,43 +909,92 @@ window.selSubject=id=>{S.selSubj=S.selSubj===id?null:id;renderSubjTags();};
 function renderSubjTags(){const el=document.getElementById('stagsEl');if(!el)return;let html=S.subjs.map(s=>`<button class="stag${S.selSubj===s.id?' on':''}" style="background:${s.color}22;color:${s.color}" onclick="selSubject('${s.id}')">${s.name}</button>`).join('');html+=`<button class="addstag" onclick="openSubjModal()">＋ Add</button>`;el.innerHTML=html;}
 
 // ── SESSION STATE MACHINE ──
-// Simple counting: interval fires every 1 second and increments S.elapsed by 1
+// Uses wall-clock time so background tabs stay accurate.
+const syncElapsed=()=>{
+  if(S.state==='running'&&S.runStartedAt){
+    S.elapsed=S.elapsedBase+Math.floor((Date.now()-S.runStartedAt)/1000);
+  }
+  return S.elapsed;
+};
+
 window.startSession=()=>{
   if(S.state==='running')return;
   if(S.mode==='pomodoro'&&S.pomoPhase==='break')return skipBreak();
-  if(S.state==='idle'){S.elapsed=0;S.breakFired=false;}
+
+  if(S.state==='idle'){
+    S.elapsed=0;
+    S.elapsedBase=0;
+    S.breakFired=false;
+  }else{
+    syncElapsed();
+    S.elapsedBase=S.elapsed;
+  }
+
+  S.runStartedAt=Date.now();
   S.state='running';
   clearInterval(S.interval);
+
   S.interval=setInterval(()=>{
-    S.startTime = Date.now();              // mark the moment Start is pressed
-    S.elapsed = S.accumulated + Math.floor((Date.now() - S.startTime) / 1000);
-    // 90-min enforcer
+    syncElapsed();
+
     if(S.mode!=='pomodoro'&&!S.breakFired&&S.elapsed>=5400){
-      S.breakFired=true;pauseSession();startBreak(600,false);return;
-    }
-    // auto-complete
-    const lim=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
-    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=lim){
-      clearInterval(S.interval);
-      if(S.mode==='pomodoro'){handlePomoEnd();}
-      else{const sec=S.elapsed;resetState();playDone();saveSess(sec,'');}
+      S.breakFired=true;
+      pauseSession();
+      startBreak(600,false);
       return;
     }
-    updateTUI();updateFsUI();
-  },1000);
-  updateTUI();updateCtrl();updateFsUI();
+
+    const lim=S.mode==='pomodoro'
+      ?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak)
+      :S.preset;
+
+    if((S.mode==='timer'||S.mode==='pomodoro')&&S.elapsed>=lim){
+      clearInterval(S.interval);
+      S.elapsed=lim;
+      S.elapsedBase=lim;
+      S.runStartedAt=null;
+
+      if(S.mode==='pomodoro'){
+        handlePomoEnd();
+      }else{
+        playDone();
+        saveSess(lim,'');
+        resetState();
+      }
+      return;
+    }
+
+    updateTUI();
+    updateFsUI();
+  },500);
+
+  updateTUI();
+  updateCtrl();
+  updateFsUI();
 };
 
 window.pauseSession=()=>{
   if(S.state!=='running')return;
+  syncElapsed();
+  S.elapsedBase=S.elapsed;
+  S.runStartedAt=null;
   clearInterval(S.interval);
   S.state='paused';
-  updateTUI();updateCtrl();updateFsUI();
+  updateTUI();
+  updateCtrl();
+  updateFsUI();
 };
 
 window.openSaveModal=()=>{
+  syncElapsed();
   if(S.state==='running')pauseSession();
-  const secs=S.elapsed;if(secs<=0){discardSession();return;}
+
+  const secs=S.elapsed;
+  if(secs<=0){
+    discardSession();
+    return;
+  }
+
   document.getElementById('saveTitle').textContent=`💾 Save ${fd(secs)} session`;
   document.getElementById('saveInfo').innerHTML=`Today's total after saving: <strong>${fd(todayS()+secs)}</strong>`;
   document.getElementById('saveNote').value='';
@@ -952,28 +1003,55 @@ window.openSaveModal=()=>{
 };
 
 window.confirmSave=()=>{
+  syncElapsed();
   const notes=document.getElementById('saveNote').value.trim();
   const secs=S.elapsed;
-  cm('saveModal');playDone();saveSess(secs,notes);resetState();
+  cm('saveModal');
+  playDone();
+  saveSess(secs,notes);
+  resetState();
 };
 
-window.discardSession=()=>{cm('saveModal');resetState();};
+window.discardSession=()=>{
+  cm('saveModal');
+  resetState();
+};
 
 function resetState(){
-  clearInterval(S.interval);S.state='idle';S.elapsed=0;S.breakFired=false;
-  if(S.mode==='pomodoro'){S.pomoRound=0;S.pomoPhase='work';renderPDots();}
-  updateTUI();updateCtrl();updateFsUI();
+  clearInterval(S.interval);
+  S.state='idle';
+  S.elapsed=0;
+  S.elapsedBase=0;
+  S.runStartedAt=null;
+  S.breakFired=false;
+
+  if(S.mode==='pomodoro'){
+    S.pomoRound=0;
+    S.pomoPhase='work';
+    renderPDots();
+  }
+
+  updateTUI();
+  updateCtrl();
+  updateFsUI();
 }
 
 function updateCtrl(){
+  syncElapsed();
+
   const idle=S.state==='idle',run=S.state==='running',pause=S.state==='paused';
   document.getElementById('cidle').classList.toggle('hidden',!idle);
   document.getElementById('crun').classList.toggle('hidden',!run);
   document.getElementById('cpause').classList.toggle('hidden',!pause);
+
   const fss=document.getElementById('fsstart'),fsp=document.getElementById('fspause'),fssv=document.getElementById('fssave');
-  if(fss){fss.style.display=run?'none':'flex';fss.textContent=pause?'▶ Resume':'▶';}
+  if(fss){
+    fss.style.display=run?'none':'flex';
+    fss.textContent=pause?'▶ Resume':'▶';
+  }
   if(fsp)fsp.style.display=run?'flex':'none';
   if(fssv)fssv.style.display=(run||pause)?'flex':'none';
+
   const dot=document.getElementById('ldot'),txt=document.getElementById('ltxt'),time=document.getElementById('ltime');
   if(dot)dot.className='ldot '+(run?'run':pause?'pause':'idle');
   if(txt)txt.textContent=run?'Session in progress':pause?'Paused — click Resume':'Ready to start';
@@ -981,47 +1059,104 @@ function updateCtrl(){
 }
 
 window.setPreset=s=>{
-  if(S.state!=='idle')return;S.preset=s;
+  if(S.state!=='idle')return;
+  S.preset=s;
   document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',+b.getAttribute('onclick').match(/\d+/)[0]===s));
   updateTUI();
 };
 
 window.switchMode=m=>{
-  if(S.state!=='idle')return;S.mode=m;S.elapsed=0;S.pomoRound=0;S.pomoPhase='work';S.breakFired=false;
+  if(S.state!=='idle')return;
+  S.mode=m;
+  S.elapsed=0;
+  S.elapsedBase=0;
+  S.runStartedAt=null;
+  S.pomoRound=0;
+  S.pomoPhase='work';
+  S.breakFired=false;
+
   ['timer','stopwatch','pomodoro'].forEach(x=>document.getElementById('m'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('on',x===m));
   document.getElementById('presetsEl').style.display=m==='timer'?'flex':'none';
   document.getElementById('pdots').classList.toggle('hidden',m!=='pomodoro');
-  updateTUI();updateCtrl();renderPDots();
+
+  updateTUI();
+  updateCtrl();
+  renderPDots();
 };
 
 function handlePomoEnd(){
+  syncElapsed();
+
   if(S.pomoPhase==='work'){
-    const sec=S.elapsed;saveSess(sec,'');playDone();
-    S.pomoRound++;S.pomoPhase='break';S.elapsed=0;S.state='idle';
+    const sec=S.elapsed;
+    saveSess(sec,'');
+    playDone();
+
+    S.pomoRound++;
+    S.pomoPhase='break';
+    S.elapsed=0;
+    S.elapsedBase=0;
+    S.runStartedAt=null;
+    S.state='idle';
+
     startBreak(S.pomoBreak,true);
   }else{
-    S.pomoPhase='work';S.elapsed=0;S.state='idle';stopBreak();
+    S.pomoPhase='work';
+    S.elapsed=0;
+    S.elapsedBase=0;
+    S.runStartedAt=null;
+    S.state='idle';
+    stopBreak();
+
     if(S.pomoRound>=S.pomoTotal)S.pomoRound=0;
   }
-  renderPDots();updateCtrl();updateTUI();
+
+  renderPDots();
+  updateCtrl();
+  updateTUI();
 }
 
 function renderPDots(){
-  const el=document.getElementById('pdots'),fs=document.getElementById('fspdots');if(!el)return;
-  let html='';for(let i=0;i<S.pomoTotal;i++){const cls=i<S.pomoRound?'pdot done':i===S.pomoRound&&S.pomoPhase==='work'?'pdot cur':'pdot';html+=`<div class="${cls}"></div>`;}
-  el.innerHTML=html;if(fs)fs.innerHTML=html;
+  const el=document.getElementById('pdots'),fs=document.getElementById('fspdots');
+  if(!el)return;
+
+  let html='';
+  for(let i=0;i<S.pomoTotal;i++){
+    const cls=i<S.pomoRound?'pdot done':i===S.pomoRound&&S.pomoPhase==='work'?'pdot cur':'pdot';
+    html+=`<div class="${cls}"></div>`;
+  }
+
+  el.innerHTML=html;
+  if(fs)fs.innerHTML=html;
 }
 
 function updateTUI(){
-  const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
-  const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
+  syncElapsed();
+
+  const p=S.mode==='pomodoro'
+    ?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak)
+    :S.preset;
+
+  const e=S.elapsed;
+  const rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
   const num=document.getElementById('tnum'),lbl=document.getElementById('tlbl'),ring=document.getElementById('tring');
+
   if(num)num.textContent=ft(rem);
+
   const level=lv(e);
-  if(ring){ring.style.stroke=GC[Math.min(level,5)];ring.style.strokeDashoffset=S.mode==='stopwatch'?0:CS*(1-Math.min(e/Math.max(p,1),1));}
-  const ml=S.mode==='pomodoro'?(S.pomoPhase==='work'?'focus':'break'):(S.mode==='timer'?'timer':'stopwatch');
+  if(ring){
+    ring.style.stroke=GC[Math.min(level,5)];
+    ring.style.strokeDashoffset=S.mode==='stopwatch'?0:CS*(1-Math.min(e/Math.max(p,1),1));
+  }
+
+  const ml=S.mode==='pomodoro'
+    ?(S.pomoPhase==='work'?'focus':'break')
+    :(S.mode==='timer'?'timer':'stopwatch');
+
   if(lbl)lbl.textContent=S.state==='running'?ml:S.state==='paused'?'paused':ml;
-  const lt=document.getElementById('ltime');if(lt)lt.textContent=e>0?fd(e):'';
+
+  const lt=document.getElementById('ltime');
+  if(lt)lt.textContent=e>0?fd(e):'';
 }
 
 // ── BREAK ──
@@ -1052,6 +1187,7 @@ window.enterFS=()=>{
 window.exitFS=()=>{S.fsOpen=false;document.getElementById('fsov').classList.remove('on');document.exitFullscreen?.().catch(()=>{});};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&S.fsOpen)exitFS();});
 function updateFsUI(){
+  syncElapsed();
   const fst=document.getElementById('fstime'),fsb=document.getElementById('fssub'),fsr=document.getElementById('fsring'),fsl=document.getElementById('fslbl');if(!fst)return;
   const p=S.mode==='pomodoro'?(S.pomoPhase==='work'?S.pomoWork:S.pomoBreak):S.preset;
   const e=S.elapsed,rem=S.mode==='stopwatch'?e:Math.max(0,p-e);
